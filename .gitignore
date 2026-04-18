@@ -1,0 +1,61 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs / temp
+*.log
+tmp/
+temp/
+*.tmp
+
+# Secrets / signing
+.env
+.env.*
+*.keystore
+*.jks
+*.p12
+*.mobileprovision
+*.cer
+*.key
+
+# Android / Gradle
+**/.gradle/
+**/build/
+**/captures/
+**/local.properties
+**/.cxx/
+**/*.apk
+**/*.aab
+
+# iOS / Xcode
+**/DerivedData/
+**/*.xcworkspace
+!**/*.xcworkspace/contents.xcworkspacedata
+**/xcuserdata/
+**/*.xcuserstate
+**/Pods/
+
+# HarmonyOS / DevEco
+**/.hvigor/
+**/oh_modules/
+**/.preview/
+**/*.hap
+**/*.har
+
+# Node / JS tooling
+**/node_modules/
+dist/
+
+# Python
+__pycache__/
+*.pyc
+
+# Local data and private samples
+samples/private/
+data/private/
+exports/private/
+
