@@ -54,6 +54,9 @@ dist/
 __pycache__/
 *.pyc
 
+# Claude Code local settings
+.claude/
+
 # Local data and private samples
 samples/private/
 data/private/

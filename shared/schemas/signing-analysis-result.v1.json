@@ -1,0 +1,187 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Signing Analysis Result v1",
+  "description": "Strict AI return schema for the signing stage.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "stage",
+    "propertyId",
+    "signingSessionId",
+    "generatedAt",
+    "overallRecommendation",
+    "summary",
+    "criticalRisks",
+    "missingClauses",
+    "negotiationPoints",
+    "requiredFollowUps",
+    "dimensionAssessments"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "signing-analysis-result.v1"
+    },
+    "stage": {
+      "const": "signing"
+    },
+    "propertyId": {
+      "$ref": "#/$defs/id"
+    },
+    "signingSessionId": {
+      "$ref": "#/$defs/id"
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "overallRecommendation": {
+      "type": "string",
+      "enum": [
+        "can_sign",
+        "clarify_before_sign",
+        "do_not_sign"
+      ]
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "criticalRisks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/riskItem"
+      }
+    },
+    "missingClauses": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "negotiationPoints": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "requiredFollowUps": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "dimensionAssessments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ownershipAuthorization",
+        "paymentTerms",
+        "leaseTermExit",
+        "maintenanceResponsibility",
+        "utilitiesFees",
+        "promisesAttachments"
+      ],
+      "properties": {
+        "ownershipAuthorization": {
+          "$ref": "#/$defs/signingDimension"
+        },
+        "paymentTerms": {
+          "$ref": "#/$defs/signingDimension"
+        },
+        "leaseTermExit": {
+          "$ref": "#/$defs/signingDimension"
+        },
+        "maintenanceResponsibility": {
+          "$ref": "#/$defs/signingDimension"
+        },
+        "utilitiesFees": {
+          "$ref": "#/$defs/signingDimension"
+        },
+        "promisesAttachments": {
+          "$ref": "#/$defs/signingDimension"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9._:-]+$"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "needs_clarification",
+        "risk",
+        "missing"
+      ]
+    },
+    "riskItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "severity",
+        "summary"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "severity": {
+          "$ref": "#/$defs/severity"
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relatedChecklistResultIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "relatedMaterialAssetIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "signingDimension": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "summary"
+      ],
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

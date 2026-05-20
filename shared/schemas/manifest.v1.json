@@ -1,0 +1,950 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Rental Viewing Assistant Manifest v1",
+  "description": "Strict single-property manifest covering both viewing and signing stages.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "bundleId",
+    "exportedAt",
+    "exportProfile",
+    "workflowStage",
+    "property",
+    "viewings",
+    "viewingChecklistResults",
+    "viewingMediaAssets",
+    "scoreCards",
+    "comparisonEntries",
+    "signingSession",
+    "signingChecklistResults",
+    "signingMaterialAssets"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "manifest.v1"
+    },
+    "bundleId": {
+      "$ref": "#/$defs/id"
+    },
+    "exportedAt": {
+      "$ref": "#/$defs/dateTime"
+    },
+    "exportProfile": {
+      "type": "string",
+      "enum": [
+        "local_backup",
+        "ai_quick_share",
+        "manual_export"
+      ]
+    },
+    "workflowStage": {
+      "$ref": "#/$defs/workflowStage"
+    },
+    "primaryViewingId": {
+      "$ref": "#/$defs/id"
+    },
+    "selectedForSigningAt": {
+      "$ref": "#/$defs/dateTime"
+    },
+    "appBuild": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "platform",
+        "appVersion"
+      ],
+      "properties": {
+        "platform": {
+          "type": "string",
+          "enum": [
+            "android",
+            "ios",
+            "harmony"
+          ]
+        },
+        "appVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "buildNumber": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "property": {
+      "$ref": "#/$defs/property"
+    },
+    "viewings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/viewing"
+      }
+    },
+    "viewingChecklistResults": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/viewingChecklistResult"
+      }
+    },
+    "viewingMediaAssets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/viewingMediaAsset"
+      }
+    },
+    "scoreCards": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/scoreCard"
+      }
+    },
+    "comparisonEntries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/comparisonEntry"
+      }
+    },
+    "signingSession": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/signingSession"
+        }
+      ]
+    },
+    "signingChecklistResults": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/signingChecklistResult"
+      }
+    },
+    "signingMaterialAssets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/signingMaterialAsset"
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "workflowStage": {
+            "const": "viewing"
+          }
+        },
+        "required": [
+          "workflowStage"
+        ]
+      },
+      "then": {
+        "properties": {
+          "signingSession": {
+            "type": "null"
+          },
+          "signingChecklistResults": {
+            "maxItems": 0
+          },
+          "signingMaterialAssets": {
+            "maxItems": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "workflowStage": {
+            "enum": [
+              "signing",
+              "signed",
+              "signing_abandoned"
+            ]
+          }
+        },
+        "required": [
+          "workflowStage"
+        ]
+      },
+      "then": {
+        "required": [
+          "selectedForSigningAt"
+        ],
+        "properties": {
+          "signingSession": {
+            "$ref": "#/$defs/signingSession"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9._:-]+$"
+    },
+    "dateTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "currencyCode": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$"
+    },
+    "workflowStage": {
+      "type": "string",
+      "enum": [
+        "viewing",
+        "signing",
+        "signed",
+        "signing_abandoned"
+      ]
+    },
+    "propertyStatus": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "to_view",
+        "viewed",
+        "shortlisted",
+        "signing",
+        "signed",
+        "signing_abandoned",
+        "rejected",
+        "archived"
+      ]
+    },
+    "sourcePlatform": {
+      "type": "string",
+      "enum": [
+        "manual",
+        "beike",
+        "ziroom",
+        "zillow",
+        "other"
+      ]
+    },
+    "decisionTag": {
+      "type": "string",
+      "enum": [
+        "unreviewed",
+        "considering",
+        "shortlisted",
+        "exclude",
+        "high_risk",
+        "selected_for_signing"
+      ]
+    },
+    "checklistResultValue": {
+      "type": "string",
+      "enum": [
+        "unchecked",
+        "ok",
+        "risk",
+        "uncertain"
+      ]
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "none",
+        "low",
+        "medium",
+        "high"
+      ]
+    },
+    "checklistItemSource": {
+      "type": "string",
+      "enum": [
+        "built_in",
+        "custom"
+      ]
+    },
+    "noiseOrOdorLevel": {
+      "type": "string",
+      "enum": [
+        "unknown",
+        "none",
+        "low",
+        "medium",
+        "high"
+      ]
+    },
+    "qualityLevel": {
+      "type": "string",
+      "enum": [
+        "unknown",
+        "poor",
+        "fair",
+        "good",
+        "excellent"
+      ]
+    },
+    "attitudeLevel": {
+      "type": "string",
+      "enum": [
+        "unknown",
+        "poor",
+        "neutral",
+        "good"
+      ]
+    },
+    "counterpartyRole": {
+      "type": "string",
+      "enum": [
+        "landlord",
+        "agent",
+        "other"
+      ]
+    },
+    "property": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "status",
+        "workflowStage",
+        "createdAt",
+        "updatedAt"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "communityName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "address": {
+          "type": "string",
+          "minLength": 1
+        },
+        "district": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rentAmount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "currencyCode": {
+          "$ref": "#/$defs/currencyCode"
+        },
+        "depositRule": {
+          "type": "string",
+          "minLength": 1
+        },
+        "agencyFee": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "中介费金额（单位与 rentAmount 一致），可选"
+        },
+        "layoutText": {
+          "type": "string",
+          "minLength": 1
+        },
+        "areaSquareMeter": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "floorInfo": {
+          "type": "string",
+          "minLength": 1
+        },
+        "orientation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contactName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contactPhone": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sourcePlatform": {
+          "$ref": "#/$defs/sourcePlatform"
+        },
+        "listingUrl": {
+          "type": "string",
+          "format": "uri"
+        },
+        "status": {
+          "$ref": "#/$defs/propertyStatus"
+        },
+        "workflowStage": {
+          "$ref": "#/$defs/workflowStage"
+        },
+        "selectedForSigningAt": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "createdAt": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "updatedAt": {
+          "$ref": "#/$defs/dateTime"
+        }
+      }
+    },
+    "viewing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "propertyId",
+        "createdAt",
+        "updatedAt"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "propertyId": {
+          "$ref": "#/$defs/id"
+        },
+        "visitType": {
+          "type": "string",
+          "enum": [
+            "on_site",
+            "remote"
+          ]
+        },
+        "scheduledAt": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "visitedAt": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "transportSummary": {
+          "type": "string"
+        },
+        "firstImpression": {
+          "type": "string"
+        },
+        "noiseLevel": {
+          "$ref": "#/$defs/noiseOrOdorLevel"
+        },
+        "odorLevel": {
+          "$ref": "#/$defs/noiseOrOdorLevel"
+        },
+        "cleanlinessLevel": {
+          "$ref": "#/$defs/qualityLevel"
+        },
+        "lightingLevel": {
+          "$ref": "#/$defs/qualityLevel"
+        },
+        "ventilationLevel": {
+          "$ref": "#/$defs/qualityLevel"
+        },
+        "agentAttitude": {
+          "$ref": "#/$defs/attitudeLevel"
+        },
+        "riskSummary": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        },
+        "createdAt": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "updatedAt": {
+          "$ref": "#/$defs/dateTime"
+        }
+      }
+    },
+    "viewingChecklistResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "viewingId",
+        "categoryCode",
+        "itemCode",
+        "itemSource",
+        "resultValue",
+        "severity",
+        "createdAt",
+        "updatedAt"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "viewingId": {
+          "$ref": "#/$defs/id"
+        },
+        "categoryCode": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$"
+        },
+        "itemCode": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$"
+        },
+        "itemSource": {
+          "$ref": "#/$defs/checklistItemSource"
+        },
+        "customLabel": {
+          "type": "string",
+          "minLength": 1
+        },
+        "resultValue": {
+          "$ref": "#/$defs/checklistResultValue"
+        },
+        "severity": {
+          "$ref": "#/$defs/severity"
+        },
+        "comment": {
+          "type": "string"
+        },
+        "createdAt": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "updatedAt": {
+          "$ref": "#/$defs/dateTime"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "itemSource": {
+                "const": "custom"
+              }
+            },
+            "required": [
+              "itemSource"
+            ]
+          },
+          "then": {
+            "required": [
+              "customLabel"
+            ]
+          }
+        }
+      ]
+    },
+    "viewingMediaAsset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "propertyId",
+        "viewingId",
+        "fileName",
+        "relativePath",
+        "mimeType",
+        "createdAt"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "propertyId": {
+          "$ref": "#/$defs/id"
+        },
+        "viewingId": {
+          "$ref": "#/$defs/id"
+        },
+        "fileName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relativePath": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?![A-Za-z]:)(?!/).+"
+        },
+        "mimeType": {
+          "type": "string",
+          "pattern": "^image\\/[A-Za-z0-9.+-]+$"
+        },
+        "capturedAt": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "note": {
+          "type": "string"
+        },
+        "sortOrder": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "linkedChecklistResultIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "createdAt": {
+          "$ref": "#/$defs/dateTime"
+        }
+      }
+    },
+    "scoreCard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "propertyId",
+        "transportScore",
+        "environmentScore",
+        "layoutScore",
+        "facilityScore",
+        "riskScore",
+        "pricePerformanceScore",
+        "totalScore",
+        "scoringVersion",
+        "createdAt",
+        "updatedAt"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "propertyId": {
+          "$ref": "#/$defs/id"
+        },
+        "viewingId": {
+          "$ref": "#/$defs/id"
+        },
+        "transportScore": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "environmentScore": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "layoutScore": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "facilityScore": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "riskScore": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "pricePerformanceScore": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "totalScore": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "scoringVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "createdAt": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "updatedAt": {
+          "$ref": "#/$defs/dateTime"
+        }
+      }
+    },
+    "comparisonEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "propertyId",
+        "selected",
+        "pinned",
+        "decisionTag",
+        "createdAt",
+        "updatedAt"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "propertyId": {
+          "$ref": "#/$defs/id"
+        },
+        "selected": {
+          "type": "boolean"
+        },
+        "pinned": {
+          "type": "boolean"
+        },
+        "userConclusion": {
+          "type": "string"
+        },
+        "decisionTag": {
+          "$ref": "#/$defs/decisionTag"
+        },
+        "createdAt": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "updatedAt": {
+          "$ref": "#/$defs/dateTime"
+        }
+      }
+    },
+    "signingSession": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "propertyId",
+        "status",
+        "startedAt",
+        "createdAt",
+        "updatedAt"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "propertyId": {
+          "$ref": "#/$defs/id"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "signed",
+            "abandoned"
+          ]
+        },
+        "startedAt": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "decidedAt": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "plannedSignDate": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "targetMoveInDate": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "counterpartyRole": {
+          "$ref": "#/$defs/counterpartyRole"
+        },
+        "counterpartyName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "counterpartyContact": {
+          "type": "string",
+          "minLength": 1
+        },
+        "decisionNotes": {
+          "type": "string"
+        },
+        "createdAt": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "updatedAt": {
+          "$ref": "#/$defs/dateTime"
+        }
+      }
+    },
+    "signingChecklistResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "signingSessionId",
+        "categoryCode",
+        "itemCode",
+        "itemSource",
+        "resultValue",
+        "severity",
+        "createdAt",
+        "updatedAt"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "signingSessionId": {
+          "$ref": "#/$defs/id"
+        },
+        "categoryCode": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$"
+        },
+        "itemCode": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$"
+        },
+        "itemSource": {
+          "$ref": "#/$defs/checklistItemSource"
+        },
+        "customLabel": {
+          "type": "string",
+          "minLength": 1
+        },
+        "resultValue": {
+          "$ref": "#/$defs/checklistResultValue"
+        },
+        "severity": {
+          "$ref": "#/$defs/severity"
+        },
+        "comment": {
+          "type": "string"
+        },
+        "createdAt": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "updatedAt": {
+          "$ref": "#/$defs/dateTime"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "itemSource": {
+                "const": "custom"
+              }
+            },
+            "required": [
+              "itemSource"
+            ]
+          },
+          "then": {
+            "required": [
+              "customLabel"
+            ]
+          }
+        }
+      ]
+    },
+    "signingMaterialAsset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "propertyId",
+        "signingSessionId",
+        "materialType",
+        "createdAt"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "propertyId": {
+          "$ref": "#/$defs/id"
+        },
+        "signingSessionId": {
+          "$ref": "#/$defs/id"
+        },
+        "materialType": {
+          "type": "string",
+          "enum": [
+            "text_note",
+            "image"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "textContent": {
+          "type": "string",
+          "minLength": 1
+        },
+        "fileName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relativePath": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?![A-Za-z]:)(?!/).+"
+        },
+        "mimeType": {
+          "type": "string",
+          "pattern": "^image\\/[A-Za-z0-9.+-]+$"
+        },
+        "capturedAt": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "note": {
+          "type": "string"
+        },
+        "sortOrder": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "linkedChecklistResultIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "createdAt": {
+          "$ref": "#/$defs/dateTime"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "materialType": {
+                "const": "text_note"
+              }
+            },
+            "required": [
+              "materialType"
+            ]
+          },
+          "then": {
+            "required": [
+              "textContent"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "materialType": {
+                "const": "image"
+              }
+            },
+            "required": [
+              "materialType"
+            ]
+          },
+          "then": {
+            "required": [
+              "fileName",
+              "relativePath",
+              "mimeType"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,1037 @@
+{
+  "schemaVersion": "signing-checklist",
+  "stage": "signing",
+  "contentVersion": "2.0.0",
+  "updatedAt": "2026-05-01T00:00:00Z",
+  "categories": [
+    {
+      "code": "identity_authorization",
+      "label": "身份、授权与房源可出租性",
+      "items": [
+        {
+          "code": "counterparty_identity",
+          "label": "签约对方身份是否明确",
+          "oneLine": "签约前必须确认对方是房东本人、代理人、二房东、中介还是住房租赁企业。",
+          "whyCheck": "签错对象会影响合同效力、押金追回和后续维权。",
+          "howToCheck": [
+            "核对姓名、身份证号、手机号、微信号和收款方。",
+            "确认合同甲方、产权人、实际收款方是否一致。",
+            "尽量与房主本人直签。"
+          ],
+          "riskSignals": [
+            "只愿口头说明身份，不提供任何材料。",
+            "合同甲方、产权人、收款方不一致且解释不清。",
+            "让租客先付款再补合同或补材料。"
+          ],
+          "captureAdvice": [
+            "身份证复印件或身份说明截图。",
+            "聊天中对方身份说明截图。",
+            "收款账户截图。"
+          ],
+          "recordAdvice": "记录对方身份、联系方式、收款账户和对应说明。",
+          "referenceLinks": [
+            {
+              "title": "市场监管总局合同示范文本库",
+              "url": "https://htsfwb.samr.gov.cn/View?id=2340996b-882d-47a4-b74d-c30784628737",
+              "note": "房屋租赁合同示范文本参考"
+            }
+          ],
+          "priority": "high",
+          "analysisMapping": {
+            "dimensions": [
+              "ownershipAuthorization"
+            ]
+          }
+        },
+        {
+          "code": "rental_authority",
+          "label": "对方是否有合法出租授权",
+          "oneLine": "不是产权人本人签约时，要确认对方是否有合法出租授权。",
+          "whyCheck": "二房东、代理人或机构无授权出租时，租客可能面临合同争议和腾退风险。",
+          "howToCheck": [
+            "要求查看房产证中体现房号和产权人的页面。",
+            "核对房屋地址、房间号、建筑面积、产权信息是否与合同一致。",
+            "对二房东或代理人，要求提供产权人授权材料。"
+          ],
+          "riskSignals": [
+            "只说“我是亲戚”“我是代理”但无授权。",
+            "房产证地址、房号和实际看房不一致。",
+            "产权人为多人但没有共有权人同意出租说明。"
+          ],
+          "captureAdvice": [
+            "房产证关键信息页截图。",
+            "授权材料截图。",
+            "合同房屋信息页截图。"
+          ],
+          "recordAdvice": "记录房产证信息、授权关系和材料缺口。",
+          "referenceLinks": [
+            {
+              "title": "住房租赁条例",
+              "url": "https://www.mee.gov.cn/zcwj/gwywj/202507/t20250722_1123995.shtml",
+              "note": "住房租赁实名签约、备案和出租管理"
+            }
+          ],
+          "priority": "high",
+          "analysisMapping": {
+            "dimensions": [
+              "ownershipAuthorization"
+            ]
+          }
+        },
+        {
+          "code": "property_rights_risk",
+          "label": "房屋权利状态是否存在风险",
+          "oneLine": "签约前要确认房屋是否存在抵押、居住权、查封、产权纠纷或其他影响出租的风险。",
+          "whyCheck": "权利状态不清可能影响正常入住、续租和后续维权。",
+          "howToCheck": [
+            "询问房屋是否抵押、是否设立居住权、是否有产权争议。",
+            "要求合同中写明出租人保证房屋可依法出租。",
+            "如对材料有疑问，先暂停付款。"
+          ],
+          "riskSignals": [
+            "房东回避产权问题。",
+            "合同不写房屋可出租性保证。",
+            "房源涉及多人共有但只有一人签字。"
+          ],
+          "captureAdvice": [
+            "合同房屋权利保证条款截图。",
+            "聊天确认截图。"
+          ],
+          "recordAdvice": "记录对方对抵押、居住权和产权状态的承诺。",
+          "referenceLinks": [
+            {
+              "title": "市场监管总局合同示范文本库",
+              "url": "https://htsfwb.samr.gov.cn/View?id=2340996b-882d-47a4-b74d-c30784628737",
+              "note": "合同中的房屋权属和承诺条款"
+            }
+          ],
+          "priority": "high",
+          "analysisMapping": {
+            "dimensions": [
+              "ownershipAuthorization"
+            ]
+          }
+        },
+        {
+          "code": "property_match",
+          "label": "签约房源是否与看房房源一致",
+          "oneLine": "防止合同地址、房号或附属空间不一致。",
+          "whyCheck": "合同房源与实际看房不一致会导致后续权益纠纷。",
+          "howToCheck": [
+            "核对合同中的地址、房号、面积与实际看房是否一致。",
+            "确认附属空间（车位、储物间等）是否写入合同。"
+          ],
+          "riskSignals": [
+            "合同地址与实际看房地址不同。",
+            "房号或面积与看房时不一致。"
+          ],
+          "captureAdvice": [
+            "核对合同中的地址与房号。",
+            "合同房屋信息页截图。"
+          ],
+          "recordAdvice": "记录合同房源信息与实际看房的差异。",
+          "referenceLinks": [
+            {
+              "title": "商品房屋租赁管理办法",
+              "url": "https://www.gov.cn/gongbao/content/2011/content_1813498.htm",
+              "note": "租赁合同标的物应与实际房屋一致"
+            }
+          ],
+          "priority": "high",
+          "analysisMapping": {
+            "dimensions": [
+              "ownershipAuthorization"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "code": "filing_local_rules",
+      "label": "合同备案、居住证与地区规则",
+      "items": [
+        {
+          "code": "lease_filing",
+          "label": "是否办理网签或租赁备案",
+          "oneLine": "合同应实名签订，并尽量通过当地住房租赁管理服务平台办理网签或备案。",
+          "whyCheck": "备案会影响居住证、公共服务和后续维权证据链。",
+          "howToCheck": [
+            "询问房东是否配合办理租赁备案。",
+            "如果出租人不办理，确认当地是否允许承租人办理。",
+            "记录所租城市、区县或街道的具体要求。"
+          ],
+          "riskSignals": [
+            "房东明确拒绝备案但不说明原因。",
+            "需要办居住证、陪读或入学材料，但合同不配合备案。"
+          ],
+          "captureAdvice": [
+            "备案平台说明截图。",
+            "房东配合备案的聊天确认截图。"
+          ],
+          "recordAdvice": "记录是否需要备案、谁办理、何时办理、需要哪些材料。",
+          "referenceLinks": [
+            {
+              "title": "住房租赁条例",
+              "url": "https://www.mee.gov.cn/zcwj/gwywj/202507/t20250722_1123995.shtml",
+              "note": "实名签订合同、住房租赁管理服务平台和备案"
+            }
+          ],
+          "priority": "high",
+          "analysisMapping": {
+            "dimensions": [
+              "ownershipAuthorization"
+            ]
+          }
+        },
+        {
+          "code": "local_special_use",
+          "label": "地方性限制和特殊用途是否写清",
+          "oneLine": "办居住证、陪读、病人陪床、宠物、孩子、改造等特殊用途应在合同或补充约定中写明。",
+          "whyCheck": "特殊用途通常涉及房东配合、稳定租期和额外限制，口头确认不够。",
+          "howToCheck": [
+            "明确自己是否需要居住证、入学材料、医院陪护便利、宠物友好或儿童友好。",
+            "把房东需要配合的事项写入补充约定。"
+          ],
+          "riskSignals": [
+            "房东口头说可以，合同里不写。",
+            "入住后才发现不允许宠物、不能办居住证、不能改造。"
+          ],
+          "captureAdvice": [
+            "补充协议截图。",
+            "聊天确认截图。"
+          ],
+          "recordAdvice": "记录特殊用途和对应需要对方配合的事项。",
+          "referenceLinks": [
+            {
+              "title": "住房租赁条例",
+              "url": "https://www.mee.gov.cn/zcwj/gwywj/202507/t20250722_1123995.shtml",
+              "note": "租赁合同条款和特殊用途约定"
+            }
+          ],
+          "priority": "medium",
+          "analysisMapping": {
+            "dimensions": [
+              "ownershipAuthorization"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "code": "rent_deposit_cycle",
+      "label": "租金、押金与付款周期",
+      "items": [
+        {
+          "code": "rent_deposit_payment_cycle",
+          "label": "房租、押金和付款周期是否写清",
+          "oneLine": "房租金额、押金金额、付款周期、付款时间和收款账户必须写入合同。",
+          "whyCheck": "付款口径不清会直接造成押金、租金和违约争议。",
+          "howToCheck": [
+            "核对房租金额、押金金额、押几付几、月付或季付、固定交租日。",
+            "所有金额尽量大小写同时写明。",
+            "核对合同收款账户与实际转账对象。"
+          ],
+          "riskSignals": [
+            "合同只写“按约支付”，没有具体金额和日期。",
+            "房租和押金转给不同主体但未说明。",
+            "临签时变更押付方式。"
+          ],
+          "captureAdvice": [
+            "租金押金条款截图。",
+            "收款账户截图。",
+            "转账备注截图。"
+          ],
+          "recordAdvice": "摘录租金、押金、支付周期和收款账户。",
+          "referenceLinks": [
+            {
+              "title": "市场监管总局合同示范文本库",
+              "url": "https://htsfwb.samr.gov.cn/View?id=2340996b-882d-47a4-b74d-c30784628737",
+              "note": "租金、押金、付款条款参考"
+            }
+          ],
+          "priority": "high",
+          "analysisMapping": {
+            "dimensions": [
+              "paymentTerms"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "code": "fund_security",
+      "label": "资金安全和支付方式",
+      "items": [
+        {
+          "code": "rent_loan_risk",
+          "label": "是否存在租金贷、押金分期或免押陷阱",
+          "oneLine": "押零付一、免押、押金分期、租金月付优惠等说法，要确认是否绑定贷款或信用授权。",
+          "whyCheck": "一些“低门槛付款”实际可能是租金贷、消费贷或自动扣款授权。",
+          "howToCheck": [
+            "看是否要求下载金融 App、做人脸识别、签分期协议、授权自动扣款。",
+            "询问是否产生贷款、征信、服务费、手续费或违约费用。",
+            "不理解协议前不要签。"
+          ],
+          "riskSignals": [
+            "合同之外另签“分期服务协议”。",
+            "不说贷款，只说“系统流程”。",
+            "免押需要开通信贷或信用授权。"
+          ],
+          "captureAdvice": [
+            "金融 App 页面截图。",
+            "分期协议截图。",
+            "自动扣款授权截图。"
+          ],
+          "recordAdvice": "记录所有付款相关协议名称和付款链路。",
+          "referenceLinks": [
+            {
+              "title": "中国政府网住房租赁资金监管相关政策解读",
+              "url": "https://www.gov.cn/fuwu/2021-04/28/content_5603351.htm",
+              "note": "住房租赁企业资金监管和租金贷风险"
+            }
+          ],
+          "priority": "high",
+          "analysisMapping": {
+            "dimensions": [
+              "paymentTerms"
+            ]
+          }
+        },
+        {
+          "code": "fund_supervision",
+          "label": "押金托管和租金监管是否明确",
+          "oneLine": "通过长租公寓、住房租赁企业或二房东机构租房时，要确认押金托管和租金监管。",
+          "whyCheck": "机构跑路、资金挪用和长期预付风险通常集中在资金监管薄弱处。",
+          "howToCheck": [
+            "询问押金是否托管、租金是否进入监管账户。",
+            "如果一次性支付超过 3 个月租金，或押金明显超过当地常见标准，要额外确认监管规则。",
+            "核对付款账户是否为合同约定账户。"
+          ],
+          "riskSignals": [
+            "要求一次性付长周期租金但不说明监管。",
+            "押金直接进入个人账户。",
+            "机构回避资金监管问题。"
+          ],
+          "captureAdvice": [
+            "监管账户说明截图。",
+            "付款账户截图。",
+            "押金托管说明截图。"
+          ],
+          "recordAdvice": "记录监管账户、托管说明、付款周期和退费规则。",
+          "referenceLinks": [
+            {
+              "title": "北京市住房租赁资金监管常见问题",
+              "url": "https://zjw.beijing.gov.cn/bjjs/fwgl/fwzlfw60/cjwt69/743736548/index.shtml",
+              "note": "押金托管、租金监管、支付周期参考"
+            }
+          ],
+          "priority": "high",
+          "analysisMapping": {
+            "dimensions": [
+              "paymentTerms"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "code": "lease_term_exit",
+      "label": "租期、续租、退租与违约",
+      "items": [
+        {
+          "code": "lease_term_delivery",
+          "label": "租期起止、交付和免租期是否明确",
+          "oneLine": "租期起止、入住日期、交付时间和免租缓冲期要写清。",
+          "whyCheck": "交付不清会影响搬家、清洁、维修和首期租金计算。",
+          "howToCheck": [
+            "核对租期起止日期、最早入住日、交付条件。",
+            "如果有 3 到 7 天免租缓冲期，要写入合同。",
+            "约定迟延交房的责任。"
+          ],
+          "riskSignals": [
+            "合同起租日早于实际交房日。",
+            "口头说免租，合同不写。",
+            "房东承诺维修后交付但无期限。"
+          ],
+          "captureAdvice": [
+            "租期条款截图。",
+            "交付和免租承诺截图。"
+          ],
+          "recordAdvice": "摘录租期、交付和免租条款。",
+          "referenceLinks": [
+            {
+              "title": "市场监管总局合同示范文本库",
+              "url": "https://htsfwb.samr.gov.cn/View?id=2340996b-882d-47a4-b74d-c30784628737",
+              "note": "租期和交付条款参考"
+            }
+          ],
+          "priority": "high",
+          "analysisMapping": {
+            "dimensions": [
+              "leaseTermExit"
+            ]
+          }
+        },
+        {
+          "code": "renewal_rent_increase_entry",
+          "label": "续租、涨价和房东带看规则是否明确",
+          "oneLine": "续租涨价、房东卖房带看、进入房屋和提前通知规则要写清。",
+          "whyCheck": "长期稳定居住、陪读、在职通勤都需要明确租期稳定性。",
+          "howToCheck": [
+            "约定租期内是否涨租。",
+            "约定续租是否优先、续租涨幅或提前通知期限。",
+            "写明房东不得随意进入房屋；带人看房、维修、检修需提前通知。"
+          ],
+          "riskSignals": [
+            "房东保留“随时看房”“随时收房”权利。",
+            "续租和涨价没有任何约束。",
+            "房东卖房带看规则不清。"
+          ],
+          "captureAdvice": [
+            "续租条款截图。",
+            "房东进入房屋和带看规则截图。"
+          ],
+          "recordAdvice": "摘录续租、涨价、进入房屋和带看条款。",
+          "referenceLinks": [
+            {
+              "title": "市场监管总局合同示范文本库",
+              "url": "https://htsfwb.samr.gov.cn/View?id=2340996b-882d-47a4-b74d-c30784628737",
+              "note": "续租和租金调整条款参考"
+            }
+          ],
+          "priority": "high",
+          "analysisMapping": {
+            "dimensions": [
+              "leaseTermExit"
+            ]
+          }
+        },
+        {
+          "code": "termination_breach",
+          "label": "提前退租和违约责任是否合理",
+          "oneLine": "提前解约、违约金、押金处理和房东提前收房责任要具体明确。",
+          "whyCheck": "退租和违约是押金纠纷最集中处。",
+          "howToCheck": [
+            "写清租客提前退租的违约金、押金处理、是否需要找下家。",
+            "写清房东提前收房、隐瞒房屋问题、擅自毁约的赔偿。",
+            "写清严重噪音、潮湿、漏水、异味、甲醛等隐瞒问题导致退租时，不应按租客违约处理。"
+          ],
+          "riskSignals": [
+            "只写租客违约，不写房东违约。",
+            "违约金没有具体金额或计算方式。",
+            "房屋隐瞒问题没有退租处理。"
+          ],
+          "captureAdvice": [
+            "违约条款截图。",
+            "押金退还和提前退租规则截图。"
+          ],
+          "recordAdvice": "摘录违约责任，标注双方责任是否对等。",
+          "referenceLinks": [
+            {
+              "title": "市场监管总局合同示范文本库",
+              "url": "https://htsfwb.samr.gov.cn/View?id=2340996b-882d-47a4-b74d-c30784628737",
+              "note": "违约责任和解除合同条款参考"
+            }
+          ],
+          "priority": "high",
+          "analysisMapping": {
+            "dimensions": [
+              "leaseTermExit"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "code": "maintenance_delivery",
+      "label": "维修责任与房屋交付",
+      "items": [
+        {
+          "code": "maintenance_boundary",
+          "label": "维修责任和处理时限是否写清",
+          "oneLine": "自然损耗、人为损坏、设备故障和维修时限必须明确。",
+          "whyCheck": "维修边界不清会导致入住后反复扯皮。",
+          "howToCheck": [
+            "写清自然损坏由谁承担，人为损坏由谁承担。",
+            "写清家具、家电、下水、马桶、水龙头、开关、灯泡等坏了谁修。",
+            "写清维修响应时限。",
+            "约定房东应修未修时，租客是否可自行维修并从房租中抵扣。"
+          ],
+          "riskSignals": [
+            "合同只写“租客负责保管使用”，不写房东维修义务。",
+            "小件、大件维修边界模糊。",
+            "维修承诺只在口头或聊天里。"
+          ],
+          "captureAdvice": [
+            "维修条款截图。",
+            "房东维修承诺聊天截图。"
+          ],
+          "recordAdvice": "摘录维修责任、时限和费用承担条款。",
+          "referenceLinks": [
+            {
+              "title": "市场监管总局合同示范文本库",
+              "url": "https://htsfwb.samr.gov.cn/View?id=2340996b-882d-47a4-b74d-c30784628737",
+              "note": "维修责任和房屋交付参考"
+            }
+          ],
+          "priority": "high",
+          "analysisMapping": {
+            "dimensions": [
+              "maintenanceResponsibility"
+            ]
+          }
+        },
+        {
+          "code": "handover_inventory",
+          "label": "房屋交割清单是否完整",
+          "oneLine": "交割清单应写清家具家电、钥匙门禁、表具读数、已有损坏和设备新旧程度。",
+          "whyCheck": "交割清单越完整，退租时越容易证明原始状态。",
+          "howToCheck": [
+            "列出家具、家电、遥控器、钥匙、门禁卡、表具读数。",
+            "已有破损、缺失、污渍、墙地面损坏逐项备注。",
+            "把看房时拍照留痕的问题同步进交割清单。"
+          ],
+          "riskSignals": [
+            "只有口头清点，没有附件。",
+            "家电家具没有新旧程度和损坏情况。",
+            "水电燃气表读数未记录。"
+          ],
+          "captureAdvice": [
+            "交割清单照片。",
+            "钥匙门禁照片。",
+            "水电燃气表照片。",
+            "原有损坏照片。"
+          ],
+          "recordAdvice": "逐项核对交割清单和实物。",
+          "referenceLinks": [
+            {
+              "title": "市场监管总局合同示范文本库",
+              "url": "https://htsfwb.samr.gov.cn/View?id=2340996b-882d-47a4-b74d-c30784628737",
+              "note": "房屋交割清单参考"
+            }
+          ],
+          "priority": "medium",
+          "analysisMapping": {
+            "dimensions": [
+              "maintenanceResponsibility"
+            ]
+          }
+        },
+        {
+          "code": "delivery_condition",
+          "label": "交房标准是否明确",
+          "oneLine": "交房时的清洁、修复、可入住状态和新增配置要可核对。",
+          "whyCheck": "房东承诺清洁、维修、换床垫、清洗空调等事项如果不写，后续难以要求履行。",
+          "howToCheck": [
+            "写清交房前需要完成的维修、清洁、换锁、家电清洗。",
+            "写清交房日期和验收方式。",
+            "把免租缓冲期与交付状态关联。"
+          ],
+          "riskSignals": [
+            "“入住前会弄好”但没有具体清单和时间。",
+            "房屋还未清洁或维修却要求先签约付款。"
+          ],
+          "captureAdvice": [
+            "交付承诺截图。",
+            "需维修或清洁位置照片。"
+          ],
+          "recordAdvice": "列出所有交付前承诺和完成期限。",
+          "referenceLinks": [
+            {
+              "title": "市场监管总局合同示范文本库",
+              "url": "https://htsfwb.samr.gov.cn/View?id=2340996b-882d-47a4-b74d-c30784628737",
+              "note": "房屋交付条件和标准参考"
+            }
+          ],
+          "priority": "medium",
+          "analysisMapping": {
+            "dimensions": [
+              "maintenanceResponsibility"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "code": "inventory_promises",
+      "label": "家具家电、物品清单与附加承诺",
+      "items": [
+        {
+          "code": "inventory_listed",
+          "label": "家具家电清单是否写入",
+          "oneLine": "家具家电清单没有写入文本，后续最容易发生“说过但没写”的争议。",
+          "whyCheck": "房内物品数量、品牌、状态和损坏责任都需要可引用。",
+          "howToCheck": [
+            "核对合同或附件中的家具家电清单。",
+            "记录品牌、数量、状态、新旧程度和明显损坏。",
+            "与实际房间逐项核对。"
+          ],
+          "riskSignals": [
+            "合同写有家具家电但不列明细。",
+            "物品清单和现场不一致。",
+            "已坏设备没有备注。"
+          ],
+          "captureAdvice": [
+            "物品清单截图。",
+            "家具家电实物照片。",
+            "破损处照片。"
+          ],
+          "recordAdvice": "对照实物清点，补齐缺失项。",
+          "referenceLinks": [
+            {
+              "title": "市场监管总局合同示范文本库",
+              "url": "https://htsfwb.samr.gov.cn/View?id=2340996b-882d-47a4-b74d-c30784628737",
+              "note": "物品清单和附属设施条款参考"
+            }
+          ],
+          "priority": "high",
+          "analysisMapping": {
+            "dimensions": [
+              "promisesAttachments"
+            ]
+          }
+        },
+        {
+          "code": "promises_written",
+          "label": "口头承诺是否写入文本",
+          "oneLine": "免租、维修、不涨租、转租、押金退还、补充配置等承诺都要转成文字。",
+          "whyCheck": "口头承诺在退租、维修和费用争议中很难证明。",
+          "howToCheck": [
+            "整理看房和聊天中的所有承诺。",
+            "核对是否写入主合同、补充协议或聊天确认。"
+          ],
+          "riskSignals": [
+            "房东说“放心”“没问题”，但不愿写。",
+            "中介承诺和房东合同不一致。"
+          ],
+          "captureAdvice": [
+            "补充协议截图。",
+            "聊天承诺截图。",
+            "合同对应条款截图。"
+          ],
+          "recordAdvice": "建立“口头承诺清单”，逐项确认是否落字。",
+          "referenceLinks": [
+            {
+              "title": "中华人民共和国民法典 合同编",
+              "url": "https://www.gov.cn/guoqing/2021-10/29/content_5647633.htm",
+              "note": "合同形式和口头承诺的法律效力"
+            }
+          ],
+          "priority": "high",
+          "analysisMapping": {
+            "dimensions": [
+              "promisesAttachments"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "code": "special_terms",
+      "label": "特殊条款、补充协议与生活限制",
+      "items": [
+        {
+          "code": "sublease_guest_rule",
+          "label": "转租、合租、访客和留宿限制是否明确",
+          "oneLine": "转租、合租、访客、留宿等生活方式限制会影响真实居住自由度。",
+          "whyCheck": "这些限制往往不显眼，但后续容易造成违约争议。",
+          "howToCheck": [
+            "问清是否允许转租、是否需房东书面同意、是否有手续费。",
+            "合租时确认费用、卫生、访客、公共区域和维修责任。",
+            "问清访客、留宿和公共空间使用规则。"
+          ],
+          "riskSignals": [
+            "不允许转租但提前退租又要求找下家。",
+            "合租费用和公共责任没有书面约定。",
+            "房东或室友对访客规则口径不一致。"
+          ],
+          "captureAdvice": [
+            "限制性条款截图。",
+            "合租协议截图。"
+          ],
+          "recordAdvice": "摘录转租、合租、访客、留宿限制。",
+          "referenceLinks": [
+            {
+              "title": "商品房屋租赁管理办法",
+              "url": "https://www.gov.cn/gongbao/content/2011/content_1813498.htm",
+              "note": "转租和承租人义务"
+            }
+          ],
+          "priority": "medium",
+          "analysisMapping": {
+            "dimensions": [
+              "promisesAttachments"
+            ]
+          }
+        },
+        {
+          "code": "special_living_rules",
+          "label": "宠物、孩子、陪护和改造规则是否明确",
+          "oneLine": "宠物、孩子、陪护、打孔、贴墙纸、装纱窗、换窗帘等规则要提前写清。",
+          "whyCheck": "这些需求会影响押金、赔偿、清洁费和退租恢复原状。",
+          "howToCheck": [
+            "明确是否允许宠物、是否有宠物押金、清洁费、损坏赔偿。",
+            "明确是否允许儿童居住、陪读、老人或病人陪护。",
+            "明确是否可以更换锁芯、加装纱窗、贴墙纸、打孔、装挂钩。",
+            "写清退租时是否需要恢复原状。"
+          ],
+          "riskSignals": [
+            "房东口头允许宠物，合同禁止宠物。",
+            "改造规则不清，退租时扣押金。",
+            "陪读或陪护需要长期稳定，但合同续租和备案不配合。"
+          ],
+          "captureAdvice": [
+            "宠物条款、改造条款、补充协议截图。",
+            "聊天确认截图。"
+          ],
+          "recordAdvice": "记录特殊居住需求和房东配合事项。",
+          "referenceLinks": [
+            {
+              "title": "住房租赁条例",
+              "url": "https://www.mee.gov.cn/zcwj/gwywj/202507/t20250722_1123995.shtml",
+              "note": "租赁合同条款和居住使用规则"
+            }
+          ],
+          "priority": "medium",
+          "analysisMapping": {
+            "dimensions": [
+              "promisesAttachments"
+            ]
+          }
+        },
+        {
+          "code": "supplementary_agreement",
+          "label": "补充协议是否与主合同一致",
+          "oneLine": "补充协议往往藏着更苛刻条件，必须与主合同逐条核对。",
+          "whyCheck": "主合同和补充协议冲突时，租客容易被不利条款约束。",
+          "howToCheck": [
+            "对照租金、押金、违约、维修、转租、入户、清洁费等条款。",
+            "标记补充协议中新增或加重租客责任的条款。",
+            "必要时要求修改或删除不合理条款。"
+          ],
+          "riskSignals": [
+            "补充协议明显偏向房东或机构。",
+            "主合同写一套，补充协议另写一套。",
+            "附件很多但临签才给。"
+          ],
+          "captureAdvice": [
+            "主合同与补充协议对应条款截图。",
+            "修改前后版本截图。"
+          ],
+          "recordAdvice": "建立主合同与补充协议差异清单。",
+          "referenceLinks": [
+            {
+              "title": "市场监管总局合同示范文本库",
+              "url": "https://htsfwb.samr.gov.cn/View?id=2340996b-882d-47a4-b74d-c30784628737",
+              "note": "主合同和补充协议条款对照参考"
+            }
+          ],
+          "priority": "high",
+          "analysisMapping": {
+            "dimensions": [
+              "promisesAttachments"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "code": "post_signing",
+      "label": "签后交接与入住准备",
+      "items": [
+        {
+          "code": "post_signing_lock_access",
+          "label": "入住后锁具和门禁是否需要处理",
+          "oneLine": "签约后应尽快确认换锁、重置智能锁密码、门禁卡和钥匙数量。",
+          "whyCheck": "前租客、中介或其他人可能仍持有旧钥匙，独居和女性租客尤其需要处理。",
+          "howToCheck": [
+            "清点大门钥匙、房间钥匙、门禁卡、遥控器。",
+            "询问是否可以更换锁芯或重置智能锁密码。",
+            "约定换锁费用由谁承担或如何分摊。",
+            "再次检查反锁、防盗链、门阻器等安全设施。"
+          ],
+          "riskSignals": [
+            "钥匙数量说不清。",
+            "不允许换锁或重置密码。",
+            "门锁松动、反锁失效、门禁管理混乱。"
+          ],
+          "captureAdvice": [
+            "钥匙和门禁卡照片。",
+            "门锁、反锁、防盗链照片。",
+            "换锁费用约定截图。"
+          ],
+          "recordAdvice": "记录钥匙门禁数量、换锁约定和门锁状态。",
+          "referenceLinks": [
+            {
+              "title": "商品房屋租赁管理办法",
+              "url": "https://www.gov.cn/gongbao/content/2011/content_1813498.htm",
+              "note": "房屋交付和使用安全责任"
+            }
+          ],
+          "priority": "high",
+          "analysisMapping": {
+            "dimensions": [
+              "maintenanceResponsibility"
+            ]
+          }
+        },
+        {
+          "code": "post_signing_cleaning",
+          "label": "入住清洁和消毒是否安排",
+          "oneLine": "入住后应对高频接触区域、卫生间、厨房和下水做一次彻底清洁。",
+          "whyCheck": "前租客遗留卫生、异味、霉菌和虫害问题，可能影响入住体验。",
+          "howToCheck": [
+            "清洁卫生间、厨房、门把手、开关、床垫、沙发等高频接触区域。",
+            "视情况更换马桶盖、花洒。",
+            "清洁下水道、地漏、厨房水槽并除味。",
+            "空调、洗衣机、冰箱、油烟机、床垫如果不是全新或不干净，应提前谈好清洗或折价。"
+          ],
+          "riskSignals": [
+            "卫生间反味、地漏异味。",
+            "床垫、沙发明显脏或有味道。",
+            "空调、洗衣机、油烟机长期未清洗。"
+          ],
+          "captureAdvice": [
+            "清洁前后对比照片。",
+            "清洗或更换费用聊天截图。"
+          ],
+          "recordAdvice": "记录入住前后清洁项目和费用承担。",
+          "referenceLinks": [
+            {
+              "title": "市场监管总局合同示范文本库",
+              "url": "https://htsfwb.samr.gov.cn/View?id=2340996b-882d-47a4-b74d-c30784628737",
+              "note": "房屋清洁和交付条件参考"
+            }
+          ],
+          "priority": "medium",
+          "analysisMapping": {
+            "dimensions": [
+              "maintenanceResponsibility"
+            ]
+          }
+        },
+        {
+          "code": "post_signing_contacts_payment",
+          "label": "缴费方式和维修联系人是否整理",
+          "oneLine": "入住后要整理水电燃气、网络、物业费缴费方式和维修联系人。",
+          "whyCheck": "缴费方式不清会造成断缴，维修联系人不清会拖延故障处理。",
+          "howToCheck": [
+            "整理房东、物业、中介、维修人员联系方式。",
+            "整理水电燃气、网络、物业费缴费方式和户号。",
+            "记录报修流程和紧急联系人。"
+          ],
+          "riskSignals": [
+            "费用只能由房东代收但不提供明细。",
+            "物业和维修联系人缺失。",
+            "报修只靠口头承诺。"
+          ],
+          "captureAdvice": [
+            "缴费户号截图。",
+            "联系人和报修方式截图。"
+          ],
+          "recordAdvice": "建立入住联系人和缴费方式清单。",
+          "referenceLinks": [
+            {
+              "title": "城镇燃气管理条例",
+              "url": "https://www.gov.cn/zhengce/2020-12/27/content_5574776.htm",
+              "note": "燃气缴费和用户责任"
+            }
+          ],
+          "priority": "medium",
+          "analysisMapping": {
+            "dimensions": [
+              "utilitiesFees"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "code": "dispute_evidence",
+      "label": "纠纷处理和证据留存",
+      "items": [
+        {
+          "code": "evidence_chain",
+          "label": "证据链是否完整",
+          "oneLine": "从看房开始就要保留房源页面、聊天、通话、视频、合同、转账和交割清单。",
+          "whyCheck": "押金、维修、噪音、漏水、甲醛、提前退租等纠纷都依赖证据。",
+          "howToCheck": [
+            "保存房源页面、聊天记录、通话录音、看房视频。",
+            "保存合同、补充协议、转账凭证、交割清单。",
+            "关键事项让对方用文字确认。"
+          ],
+          "riskSignals": [
+            "对方只愿电话说，不愿文字确认。",
+            "所有费用走现金或无备注转账。",
+            "合同、附件、交割单不完整。"
+          ],
+          "captureAdvice": [
+            "房源页面截图。",
+            "关键聊天截图。",
+            "转账凭证截图。",
+            "合同和交割单照片。"
+          ],
+          "recordAdvice": "按房源建立证据文件夹或记录索引。",
+          "referenceLinks": [
+            {
+              "title": "住房租赁条例",
+              "url": "https://www.mee.gov.cn/zcwj/gwywj/202507/t20250722_1123995.shtml",
+              "note": "住房租赁纠纷和监管路径"
+            }
+          ],
+          "priority": "high",
+          "analysisMapping": {
+            "dimensions": [
+              "promisesAttachments"
+            ]
+          }
+        },
+        {
+          "code": "dispute_resolution",
+          "label": "争议解决方式是否明确",
+          "oneLine": "合同应约定协商、调解、投诉、仲裁或诉讼等争议解决路径。",
+          "whyCheck": "出现押金或维修纠纷时，提前约定路径能减少处理成本。",
+          "howToCheck": [
+            "看合同是否写明争议解决方式。",
+            "涉及中介或租赁企业时，记录可投诉的主体和主管部门。",
+            "出现问题时先书面沟通并明确诉求和期限。"
+          ],
+          "riskSignals": [
+            "合同没有争议解决条款。",
+            "只写对租客不利的违约处理。",
+            "中介或租赁企业主体不清。"
+          ],
+          "captureAdvice": [
+            "争议解决条款截图。",
+            "中介或租赁企业主体信息截图。"
+          ],
+          "recordAdvice": "摘录争议解决条款和投诉主体。",
+          "referenceLinks": [
+            {
+              "title": "住房租赁条例",
+              "url": "https://www.mee.gov.cn/zcwj/gwywj/202507/t20250722_1123995.shtml",
+              "note": "租赁纠纷处理和监管"
+            }
+          ],
+          "priority": "high",
+          "analysisMapping": {
+            "dimensions": [
+              "promisesAttachments"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "templateModules": [
+    {
+      "code": "signing.identity_authorization",
+      "label": "身份与授权核查",
+      "reason": "身份和授权核查是签约的基础环节",
+      "categoryCodes": [
+        "identity_authorization"
+      ],
+      "alwaysEnabled": true
+    },
+    {
+      "code": "signing.payment_deposit",
+      "label": "租金押金与费用",
+      "reason": "租金押金和费用是签约核心条款",
+      "categoryCodes": [
+        "rent_deposit_cycle",
+        "fund_security"
+      ],
+      "alwaysEnabled": true
+    },
+    {
+      "code": "signing.lease_term_exit",
+      "label": "租期退租与违约",
+      "reason": "租期和退租规则直接影响居住稳定性",
+      "categoryCodes": [
+        "lease_term_exit"
+      ],
+      "alwaysEnabled": true
+    },
+    {
+      "code": "signing.delivery_maintenance",
+      "label": "交割维修与交付",
+      "reason": "交割维修和交付标准影响入住体验",
+      "categoryCodes": [
+        "maintenance_delivery"
+      ],
+      "alwaysEnabled": true
+    },
+    {
+      "code": "signing.filing_local",
+      "label": "备案与地区规则",
+      "reason": "不同城市对备案、居住证和资金监管规则差异较大",
+      "categoryCodes": [
+        "filing_local_rules"
+      ],
+      "alwaysEnabled": false
+    },
+    {
+      "code": "signing.inventory_promises",
+      "label": "物品清单与承诺",
+      "reason": "物品清单和口头承诺不写入文本最易引发争议",
+      "categoryCodes": [
+        "inventory_promises"
+      ],
+      "alwaysEnabled": false
+    },
+    {
+      "code": "signing.special_terms",
+      "label": "特殊条款与生活限制",
+      "reason": "生活方式相关限制不显眼但后续容易造成违约",
+      "categoryCodes": [
+        "special_terms"
+      ],
+      "alwaysEnabled": false
+    },
+    {
+      "code": "signing.post_signing",
+      "label": "签后交接与入住",
+      "reason": "签约后锁具、清洁和缴费安排影响入住体验",
+      "categoryCodes": [
+        "post_signing"
+      ],
+      "alwaysEnabled": false
+    },
+    {
+      "code": "signing.dispute_evidence",
+      "label": "纠纷处理与证据",
+      "reason": "证据链和争议解决路径是维权的基础",
+      "categoryCodes": [
+        "dispute_evidence"
+      ],
+      "alwaysEnabled": false
+    },
+    {
+      "code": "signing.entry_rules",
+      "label": "房东进入权限",
+      "reason": "独居和女性租客需明确房东进入房屋和带看规则",
+      "itemCodes": [
+        "renewal_rent_increase_entry"
+      ],
+      "alwaysEnabled": false
+    },
+    {
+      "code": "signing.pet_clause",
+      "label": "宠物条款",
+      "reason": "宠物相关纠纷通常在合同没有提前写清时发生",
+      "itemCodes": [
+        "special_living_rules"
+      ],
+      "alwaysEnabled": false
+    },
+    {
+      "code": "signing.co_living_agreement",
+      "label": "合租协议",
+      "reason": "合租费用和公共责任需要书面化",
+      "itemCodes": [
+        "sublease_guest_rule"
+      ],
+      "alwaysEnabled": false
+    }
+  ]
+}

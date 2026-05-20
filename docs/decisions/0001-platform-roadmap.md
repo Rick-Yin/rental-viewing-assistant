@@ -1,29 +1,86 @@
-# 0001 Platform Roadmap
+# 决策记录 0001：平台路线图
 
-- Status: accepted
-- Date: 2026-04-19
+- 状态：已接受
+- 日期：2026-04-19
 
-## Decision
+## 背景
 
-The project will roll out in this order:
+本项目 `rental-viewing-assistant` 的目标不是一次性覆盖所有平台，而是尽快验证“看房记录、结构化评估、多房对比、签约核查”这条核心价值链是否成立。当前资源有限，如果同时推进 Android、iOS、HarmonyOS，会在以下方面放大风险：
+
+- 需求仍在快速变化，过早做多端会导致高返工。
+- 媒体采集、离线存储、对比评分和签约核查等核心能力尚未沉淀。
+- 共享代码边界尚未验证，过早强行统一 UI 会提高复杂度。
+
+因此需要先确定平台优先级，并约束后续技术选型。
+
+## 决策
+
+平台开发顺序确定为：
 
 1. Android
 2. iOS
 3. HarmonyOS
 
-## Rationale
+同时采用“先验证业务闭环，再抽共享层，最后扩平台”的策略：
 
-- Android provides the broadest early device coverage.
-- The product's first critical loop is on-site mobile capture, AI sharing, and structured import.
-- Android is the fastest path to validating that loop with the largest initial audience.
-- iOS is the next platform needed to cover the mainstream mobile market.
-- HarmonyOS follows after the first two mobile platforms are validated.
+- 第一阶段只要求 Android 端完成 MVP 闭环。
+- 第二阶段在业务模型、数据层、同步协议稳定后，再支持 iOS。
+- 第三阶段在领域模型和接口边界稳定后，再评估 HarmonyOS 实现。
 
-## Consequences
+## 决策依据
 
-- The first implementation work should assume Android as the primary client.
-- Shared schemas, prompts, and checklist definitions should be kept platform-neutral from day one.
-- iOS and HarmonyOS directories can remain as placeholders until their phases start.
-- Design work should avoid Android-specific assumptions when defining product structure, while still
-  allowing Android to lead implementation.
+### 1. Android 适合作为首发平台
 
+- 开发门槛最低，工具链成熟，适合快速迭代。
+- 相机、存储、定位、离线数据等能力完整，适合看房与签约材料采集场景。
+- 更适合先验证“采集 -> 记录 -> 评分 -> 对比 -> 签约核查 -> 导出”的真实使用链路。
+
+### 2. iOS 适合作为第二平台
+
+- 当核心业务模型稳定后，再做第二端，返工更可控。
+- 可以共享领域模型、数据同步协议、验证规则和部分仓储逻辑。
+- iOS 用户价值高，但不应早于 Android 阶段争夺工程资源。
+
+### 3. HarmonyOS 放在第三阶段
+
+- 当前阶段不应为了平台覆盖率牺牲主线交付速度。
+- HarmonyOS 的 UI 与应用模型需要单独适配，应基于稳定的业务层和接口层实施。
+- 在 Android 和 iOS 均验证通过之前，不值得优先投入。
+
+## 技术约束
+
+为配合该路线图，后续技术设计必须遵守以下原则：
+
+- 不在 MVP 阶段追求多端统一 UI。
+- 优先统一领域模型、数据结构、评分规则和同步协议。
+- 媒体文件、导出格式、数据库迁移策略必须从第一阶段开始标准化。
+- 任何共享代码方案都必须服务于后续扩平台，而不是阻碍 Android 首发。
+
+## 影响
+
+### 正面影响
+
+- 能更快形成真实可演示、可试用的产品。
+- 核心业务逻辑先落地，后续扩平台更稳。
+- 有利于把工程复杂度集中在最关键的问题上。
+
+### 负面影响
+
+- iOS 与 HarmonyOS 会晚于 Android 交付。
+- 早期可能存在平台间暂时不一致的实现。
+- 如果过晚抽象共享层，后续会有一定重构成本。
+
+## 后续行动
+
+1. 优先完成 Android MVP 的核心闭环。
+2. 固化数据模型、媒体存储规范与导出格式。
+3. 设计可迁移到多平台的领域层与仓储接口。
+4. 在 Android MVP 稳定后，评估并实施 iOS 方案。
+5. 在共享层边界稳定后，再推进 HarmonyOS。
+
+## 相关文档
+
+- [产品与技术路线图](../产品与技术路线图.md)
+- [MVP范围说明](../MVP范围说明.md)
+- [应用架构设计](../应用架构设计.md)
+- [核心数据模型](../核心数据模型.md)

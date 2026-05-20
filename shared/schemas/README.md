@@ -1,10 +1,15 @@
 # Shared Schemas
 
-This directory is for strict cross-platform structures such as:
+This directory is for strict cross-platform structures.
 
-- `manifest.json`
-- `AIAnalysisResult`
-- future import and export schema versions
+Current files:
 
-The goal is to keep the data contract platform-neutral.
+- `manifest.v1.json`: strict single-property manifest covering both viewing and signing stages
+- `viewing-analysis-result.v1.json`: AI return contract for the viewing stage
+- `signing-analysis-result.v1.json`: AI return contract for the signing stage
 
+Notes:
+
+- `manifest.v1.json` uses `relativePath` for media references so the bundle stays portable across devices and platforms.
+- App-internal absolute file paths should be resolved by the platform client, not stored in exported data.
+- Viewing and signing use separate AI result schemas on purpose. Their responsibilities are different and should stay parseable without stage-specific branching.

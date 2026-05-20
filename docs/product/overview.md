@@ -1,202 +1,248 @@
-# Product Overview
+# 产品总览
 
-## One-Sentence Definition
+## 一句话定义
 
-Rental Viewing Assistant is a local-first mobile app that helps renters record apartment visits in a structured way, share AI-friendly review material from the phone, and compare multiple properties with clearer evidence.
+Rental Viewing Assistant 是一款本地优先的移动端租房助手，帮助用户完成两件事：
 
-## Goals
+- 在看房阶段记录和比较多套房源
+- 在签约阶段核查一套已选房源的风险并完成最终决策
 
-The product is designed to improve three moments in the apartment-hunting workflow:
+## 产品目标
 
-- reduce missed checks during on-site visits
-- preserve evidence, notes, and context after a visit
-- make multi-property comparison more stable and less memory-driven
+产品主要改善租房流程中的四个关键时刻：
 
-## Product Shape
+- 降低看房现场漏检的概率
+- 保留看房后的证据、备注和上下文
+- 让多套房源对比不再依赖记忆
+- 在签约前系统化核查条款、费用和责任风险
 
-The current product loop is:
+## 当前产品形态
 
-1. Create a local property record.
-2. Fill in key property facts.
-3. Complete a structured checklist during the visit.
-4. Attach notes and photos to suspicious or uncertain items.
-5. Generate AI-friendly outbound share content.
-6. Send text plus images to an external AI app.
-7. Paste structured AI results back into the app.
-8. Review a single-property diagnosis and compare multiple properties.
+当前产品按两个阶段组织：
 
-## Local-First Principles
+1. `看房阶段`：多套房源并行记录、评分和比较
+2. `签约阶段`：只对一套已选房源做签约核查和 AI 辅助审查
 
-- Raw records, media files, and imported analysis results stay on device by default.
-- Data leaves the device only when the user explicitly shares, copies, or exports it.
-- The app remains useful even if the user never sends anything to an external AI tool.
+完整闭环如下：
 
-## MVP Scope
+1. 首次使用或开始新一轮租房时填写轻量租房画像。
+2. 根据画像推荐看房与签约 checklist 模板组合。
+3. 创建多套房源记录。
+4. 在看房阶段填写房源事实、看房 checklist、备注和照片。
+5. 生成看房阶段的 AI 分享内容并导入结构化分析结果。
+6. 对多套房源进行横向比较，选出最想推进的一套。
+7. 将该房源切换到签约阶段。
+8. 填写签约 checklist，补充签约备注、截图和现场照片。
+9. 生成签约阶段的 AI 审查内容并导入结构化结果。
+10. 将房源最终标记为 `已签约` 或 `签约放弃`。
 
-### Target Users
+## 本地优先原则
 
-- first-time or less experienced renters
-- users who visit multiple properties in a short period
-- users who want to turn on-site impressions into comparable decision material
+- 原始记录、媒体文件和 AI 导入结果默认留在设备本地。
+- 数据只有在用户主动分享、复制或导出时才会离开设备。
+- 即使用户完全不使用外部 AI，App 也必须保持可用。
 
-### Platform Rollout
+## MVP 范围
 
-- mobile-first
-- Android in phase 1
-- iOS in phase 2
-- HarmonyOS in phase 3
+### 目标用户
 
-### On-Site Inputs
+- 第一次或经验较少的租客
+- 短时间内需要连续看多套房的用户
+- 希望把看房印象变成结构化决策材料的用户
+- 希望在签约前系统化核查条款和费用的用户
 
-- property basic information
-- photos
-- text notes
-- built-in checklist
-- user-defined checklist additions
+### 平台节奏
 
-### Analysis Outputs
+- 移动端优先
+- Android 第一阶段
+- iOS 第二阶段
+- HarmonyOS 第三阶段
 
-- AI Quick Share
-- single-property diagnosis
-- multi-property comparison board
-- missing-information reminders
-- suggested recheck items
+### 看房阶段输入
 
-## Core Flow
+- 租房画像与模板推荐结果
+- 房源基础信息
+- 看房备注
+- 现场照片
+- 内置看房 checklist
+- 用户自定义看房补充项
 
-### Create Property Record
+### 签约阶段输入
 
-Each property is saved as an independent record. Suggested minimum fields:
+- 签约 checklist
+- 合同摘录和人工备注
+- 条款截图或现场照片
+- 中介/房东沟通中的关键信息
 
-- `title`
-- `address`
-- `rent`
-- `deposit_terms`
-- `layout`
-- `area`
-- `floor`
-- `orientation`
-- `viewing_time`
-- `agent_or_landlord_note`
+### 分析输出
 
-### Complete On-Site Inspection
+- 看房阶段 AI Quick Share
+- 签约阶段 AI 审查分享
+- 单房看房诊断
+- 多房源对比板
+- 签约风险审查结果
+- 待补充信息和复查提醒
 
-Users go through checklist items during the visit. Each item supports one of four states:
+## 默认 checklist 体系
 
-- `未检查`
-- `正常`
-- `有风险`
-- `不确定`
+### 租房画像与模板推荐
 
-Each item can also include:
+在用户选择 checklist 模板前，App 应允许用户填写一组轻量信息，用于推荐更合适的看房和签约模板组合。
 
-- a short note
-- linked photos
-- user-defined subitems
+画像字段应尽量少，且全部可跳过：
 
-### Generate AI Share Content
+- 租房身份：大学生、在职人员、家庭、陪读、病人陪床、其他
+- 性别：可选，仅用于安全、隐私和夜间路线等提醒
+- 特殊用途：陪读、病人陪床、短租过渡、长期稳定居住、宠物友好、儿童友好等
+- 同住情况：独居、情侣、室友合租、带孩子、带老人、陪护
+- 宠物情况：无宠物、有宠物、未来可能养宠物
+- 子女情况：无孩子、有孩子、陪读或学区相关
+- 所租地区：城市、区县或商圈，可用于提示本地备案、通勤、合规和费用差异
 
-The app prepares outbound content optimized for mainstream mobile AI tools: text in `share_note.md` or
-`share_note.txt` plus a small set of key JPEG images.
+推荐结果不是替用户决策，而是调整 checklist 的优先级和模板组合，例如：
 
-### Import AI Results
+- 大学生：增加预算、合租、通勤、室友、押金和中介费风险项
+- 在职人员：增加通勤稳定性、夜间回家安全、噪音、网络和远程办公项
+- 女性独居：增加门锁、楼道、监控、隐私摄像头、夜间路线和邻里安全项
+- 陪读或带孩子：增加学校距离、噪音、采光、楼层、电梯、儿童安全和邻里环境项
+- 病人陪床或老人同住：增加医院距离、电梯、无障碍、噪音、通风、燃气和紧急联系人项
+- 有宠物：增加是否允许养宠、宠物押金、地板材质、异味、隔音和邻里接受度项
 
-Users paste AI output back into the app. Valid structured results are then used to render diagnosis
-and comparison views.
+推荐应以规则匹配为主，MVP 不需要复杂推荐算法。
 
-## Default Checklist Categories
+### 看房 checklist
 
-The current built-in checklist framework has 10 categories:
+看房阶段用于比较多套房源，当前按以下类别组织：
 
-- noise and sound insulation
-- lighting and ventilation
-- humidity, mold, and odor
-- appliance condition and energy-use concerns
-- hygiene, pests, and drainage
-- water, electricity, gas, and connectivity
-- doors, windows, and safety
-- public area quality and neighborhood environment
-- commuting cost and nearby amenities
-- contract, fees, and hidden terms
+- 交通与周边
+- 小区与公共区域
+- 户型与采光通风
+- 噪音、异味与潮湿
+- 卫生、维护与虫害
+- 水电燃气与网络
+- 家具家电与设施完整度
+- 门窗、安全与隐私
+- 价格与房源信息一致性
 
-## Data Objects
+### 签约 checklist
 
-### `PropertyRecord`
+签约阶段用于核查已选房源的条款和责任边界，当前按以下类别组织：
 
-Stores the property facts and user-entered context.
+- 身份、授权与房源可出租性
+- 租金、押金与付款周期
+- 租期、续租、退租与违约
+- 费用边界与公共支出
+- 维修责任与房屋交付
+- 家具家电、物品清单与附加承诺
+- 特殊条款、补充协议与隐藏限制
 
-### `ChecklistItem`
+## 数据对象
 
-Stores the structured inspection state of one item.
+### `Property`
 
-### `PhotoItem`
+房源主对象，贯穿看房和签约两个阶段。
 
-Stores image metadata and the relationships between photos and checklist items.
+### `RentalProfile`
 
-### `AIAnalysisResult`
+用户在选择模板前填写的轻量租房画像，用于推荐 checklist 模板组合。
 
-Stores structured AI output returned to the app for visualization and comparison.
+### `ChecklistTemplateSelection`
 
-## AI Sharing Protocol
+某次租房周期中实际启用的看房和签约模板组合，允许用户在推荐基础上手动调整。
 
-### Outbound Layer
+### `Viewing`
 
-The current outbound sharing layer is designed for free mainstream mobile AI clients:
+一次实际看房事件，同一房源可有多条记录。
 
-- `share_note.md` or `share_note.txt`
-- standalone `JPEG` images
+### `ViewingChecklistResult`
 
-This format is chosen because text plus images is the most stable common denominator across mobile AI
-apps.
+看房阶段某个检查项的结构化结果。
 
-### Internal Structured Layer
+### `SigningSession`
 
-The internal structured layer is kept in `manifest.json`, which stores:
+被选中进入签约阶段后的签约主对象，同一时间全局只允许一个活跃实例。
 
-- property facts
-- checklist entries
-- image references and captions
-- import linkage such as `property_id`
+### `SigningChecklistResult`
 
-### Return Layer
+签约阶段某个核查项的结构化结果。
 
-The AI return layer is a strict structured JSON object so that:
+### `ViewingAnalysisResult`
 
-- imported results remain parseable
-- diagnosis views are repeatable
-- multi-property comparison consumes stable fields
+看房阶段 AI 回贴结果，用于单房诊断与多房比较。
 
-## Result Views
+### `SigningAnalysisResult`
 
-### Single-Property Diagnosis
+签约阶段 AI 回贴结果，用于签约风险审查。
 
-The diagnosis view should surface:
+## AI 分享协议
 
-- overall recommendation
-- top concerns
-- missing information
-- suggested recheck items
-- original notes and key photos
+### Outbound 层
 
-### Multi-Property Comparison
+两类 AI 分享都优先适配主流移动端 AI：
 
-The comparison board should display at least:
+- `Markdown/TXT`
+- 独立 `JPEG/PNG` 图片
 
-- comfort
-- hidden costs
-- hygiene and health
-- safety
-- contract and fee risk
-- information completeness
+当前不把 PDF、录音和外链放入 MVP 范围。
 
-The current product direction prefers discrete levels and grouped labels over a complex numerical
-score.
+### Internal 层
 
-## Current Product Judgments
+内部结构层通过 `manifest.v1.json` 表达单套房源的完整生命周期，包含：
 
-- The core scenario is rental viewing and post-visit comparison.
-- The most important inputs are checklist structure, notes, and key photos.
-- The most important share format is `Markdown/TXT + JPEG`.
-- The most important internal structure is `manifest.json + AIAnalysisResult JSON`.
-- The most important decision surface is the multi-property comparison board.
+- 房源事实
+- 看房记录与看房检查项
+- 看房照片
+- 签约会话
+- 签约检查项
+- 签约文字材料与图片材料
 
+### Return 层
+
+AI 回贴层拆成两套独立 schema：
+
+- `viewing-analysis-result.v1.json`
+- `signing-analysis-result.v1.json`
+
+这样做是为了让看房比较和签约核查分别保持清晰、稳定和可解析。
+
+## 结果视图
+
+### 看房单房诊断
+
+应至少展示：
+
+- 总体建议
+- 主要风险
+- 缺失信息
+- 建议复查项
+- 原始备注与关键照片
+
+### 多房源对比板
+
+应至少展示：
+
+- 舒适度
+- 隐性成本
+- 卫生与健康
+- 安全
+- 信息完整度
+- 是否值得推进到签约阶段
+
+### 签约风险审查
+
+应至少展示：
+
+- 是否建议签约
+- 关键风险条款
+- 待确认条款
+- 谈判建议
+- 必须补齐的材料
+
+## 当前产品判断
+
+- 核心场景已经从单纯“看房后比较”升级为“看房比较 + 签约核查”。
+- 模板推荐应服务于更快进入合适 checklist，而不是替代用户判断。
+- 看房阶段最重要的输入是 checklist、备注和关键照片。
+- 签约阶段最重要的输入是条款摘录、截图、责任边界和费用信息。
+- 最重要的内部结构是 `manifest.v1 + viewing/signing analysis result schema`。
+- 最重要的决策面不再只有对比板，还包括签约风险审查页。

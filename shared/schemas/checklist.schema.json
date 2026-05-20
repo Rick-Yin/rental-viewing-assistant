@@ -1,0 +1,337 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Checklist",
+  "description": "Unified checklist structure for viewing and signing stages. Single source of truth with layered card UI support.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "stage",
+    "contentVersion",
+    "updatedAt",
+    "categories",
+    "templateModules"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "enum": [
+        "viewing-checklist",
+        "signing-checklist"
+      ]
+    },
+    "stage": {
+      "type": "string",
+      "enum": [
+        "viewing",
+        "signing"
+      ]
+    },
+    "contentVersion": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "categories": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/ChecklistCategory"
+      }
+    },
+    "templateModules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/TemplateModule"
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "stage": {
+            "const": "viewing"
+          }
+        },
+        "required": [
+          "stage"
+        ]
+      },
+      "then": {
+        "properties": {
+          "schemaVersion": {
+            "const": "viewing-checklist"
+          },
+          "categories": {
+            "items": {
+              "properties": {
+                "items": {
+                  "items": {
+                    "properties": {
+                      "analysisMapping": {
+                        "properties": {
+                          "dimensions": {
+                            "items": {
+                              "enum": [
+                                "comfort",
+                                "hiddenCosts",
+                                "hygieneHealth",
+                                "safety",
+                                "informationCompleteness"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "stage": {
+            "const": "signing"
+          }
+        },
+        "required": [
+          "stage"
+        ]
+      },
+      "then": {
+        "properties": {
+          "schemaVersion": {
+            "const": "signing-checklist"
+          },
+          "categories": {
+            "items": {
+              "properties": {
+                "items": {
+                  "items": {
+                    "properties": {
+                      "analysisMapping": {
+                        "properties": {
+                          "dimensions": {
+                            "items": {
+                              "enum": [
+                                "ownershipAuthorization",
+                                "paymentTerms",
+                                "leaseTermExit",
+                                "maintenanceResponsibility",
+                                "utilitiesFees",
+                                "promisesAttachments"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "code": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$",
+      "minLength": 1
+    },
+    "ChecklistCategory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "label",
+        "items"
+      ],
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/code"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/ChecklistItem"
+          }
+        }
+      }
+    },
+    "ChecklistItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "label",
+        "oneLine",
+        "whyCheck",
+        "howToCheck",
+        "riskSignals",
+        "captureAdvice",
+        "recordAdvice",
+        "referenceLinks",
+        "priority"
+      ],
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/code"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "oneLine": {
+          "type": "string",
+          "minLength": 1
+        },
+        "whyCheck": {
+          "type": "string",
+          "minLength": 1
+        },
+        "howToCheck": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "riskSignals": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "captureAdvice": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "recordAdvice": {
+          "type": "string"
+        },
+        "referenceLinks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ReferenceLink"
+          }
+        },
+        "priority": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ]
+        },
+        "analysisMapping": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "dimensions"
+          ],
+          "properties": {
+            "dimensions": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            }
+          }
+        }
+      }
+    },
+    "ReferenceLink": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "url"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "minLength": 1
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "TemplateModule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "label",
+        "reason",
+        "categoryCodes"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_.]+$"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "categoryCodes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/code"
+          },
+          "uniqueItems": true
+        },
+        "itemCodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/code"
+          },
+          "uniqueItems": true
+        },
+        "alwaysEnabled": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

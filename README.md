@@ -2,41 +2,41 @@
 
 [English](./README.md) | [简体中文](./README.zh-CN.md)
 
-> A local-first mobile app for structured apartment viewing, AI-assisted risk review, and multi-property comparison.
+> A local-first mobile app for structured apartment viewing, shortlist comparison, and signing review.
 
 [![Stage](https://img.shields.io/badge/stage-pre--MVP-0f766e)](#current-status)
-[![Platforms](https://img.shields.io/badge/platform-roadmap-Android%20%E2%86%92%20iOS%20%E2%86%92%20HarmonyOS-2563eb)](./docs/decisions/0001-platform-roadmap.md)
+[![Platforms](https://img.shields.io/badge/platform%20roadmap-Android%20%E2%86%92%20iOS%20%E2%86%92%20HarmonyOS-2563eb)](./docs/decisions/0001-platform-roadmap.md)
 [![License](https://img.shields.io/badge/license-PolyForm%20Noncommercial%201.0.0-b91c1c)](./LICENSE)
 
-Rental Viewing Assistant helps renters turn messy apartment viewings into structured decision material.
-Users record notes, checklist results, and photos during a visit, share an AI-friendly bundle from their phone, then paste structured results back into the app to review risks and compare multiple properties.
+Rental Viewing Assistant helps renters turn fragmented viewing notes and signing concerns into structured decision material.
+Users inspect multiple properties during the viewing stage, compare shortlisted options, then move exactly one selected property into a signing stage with its own checklist, materials, and AI-assisted review.
 
 ## Why This Project Exists
 
 Apartment hunting usually breaks down in the same places:
 
 - Too many details must be checked on-site in a short amount of time.
-- Weak signals such as noise, dampness, poor ventilation, aging appliances, or hidden fees are easy to miss.
+- Weak signals such as noise, dampness, poor ventilation, aging appliances, hidden fees, or vague promises are easy to miss.
 - Photos, chat logs, and memory do not naturally turn into comparable decisions.
-- Generic AI chats are useful, but they rarely receive stable structured input.
+- After choosing one property, signing risks are often reviewed in a rushed and unstructured way.
 
-This project focuses on the missing workflow between *visiting a property* and *making a clear decision afterward*.
+This project focuses on the missing workflow between *visiting multiple properties*, *shortlisting one option*, and *reviewing signing risks before committing*.
 
 ## Core Product Loop
 
-1. Create a local property record.
-2. Fill in key facts, checklist items, notes, and photos during the visit.
-3. Generate an AI-friendly share package from the phone.
-4. Send `share_note + images` to a mainstream AI app.
-5. Paste structured AI output back into the app.
-6. Review a single-property diagnosis and compare multiple options side by side.
+1. Create local property records.
+2. Capture viewing facts, checklist items, notes, and photos for multiple properties.
+3. Compare shortlisted options side by side.
+4. Move one selected property into the signing stage.
+5. Review a signing checklist, attach signing materials, and generate an AI-friendly signing review package.
+6. Paste structured AI output back into the app and finalize the property as `signed` or `signing_abandoned`.
 
 ## Product Principles
 
 - `Local-first`: raw records, media, and analysis history stay on device by default.
 - `AI-friendly`: outbound sharing is optimized for mainstream mobile AI clients.
 - `Structured`: internal schemas stay stable even when external AI apps vary.
-- `Decision support`: the app organizes evidence and recommendations; it does not replace the renter's judgment.
+- `Decision support`: the app organizes evidence and recommendations during both viewing and signing; it does not replace the renter's judgment.
 
 ## Platform Roadmap
 
@@ -70,11 +70,11 @@ The current release strategy is documented in [0001-platform-roadmap.md](./docs/
 
 ### What Goes Where
 
-- [`docs/product`](./docs/product): product definition, information architecture, flows, and interaction-level specs.
+- [`docs/product`](./docs/product): product definition, page tree, flows, and interaction-level specs.
 - [`docs/research`](./docs/research): competitor and market research.
 - [`docs/decisions`](./docs/decisions): key project decisions and rationale.
-- [`design`](./design): Figma links, exported previews, and design-related references.
-- [`shared`](./shared): cross-platform schemas, prompts, checklist definitions, and fixtures.
+- [`design`](./design): HTML interactive prototype and design-related references.
+- [`shared`](./shared): cross-platform schemas, prompt contracts, checklist definitions, and fixtures.
 - [`apps`](./apps): client implementations by platform.
 - [`samples`](./samples): sanitized examples only. No real property data.
 
@@ -87,25 +87,23 @@ What is already defined:
 - product direction
 - target users
 - local-first storage stance
-- AI quick share format
-- result views
+- dual-stage workflow: `viewing -> signing`
+- shared manifest contract
+- dual AI result contracts for viewing and signing
+- built-in checklist libraries for viewing and signing
 - competitor landscape
 - platform rollout order
 
 What still needs to be locked down before implementation:
 
-- information architecture and page tree
-- strict schema definitions
-- prompt and AI return contract
-- checklist item library
-- Android technical stack and storage choices
+- Android module skeleton and persistence wiring
 
 ## Recommended Reading Order
 
 1. [docs/product/overview.md](./docs/product/overview.md)
-2. [docs/research/competitors.md](./docs/research/competitors.md)
+2. [docs/product/information-architecture.md](./docs/product/information-architecture.md)
 3. [docs/decisions/0001-platform-roadmap.md](./docs/decisions/0001-platform-roadmap.md)
-4. [design/figma-links.md](./design/figma-links.md)
+4. [design/prototype/index.html](./design/prototype/index.html)
 
 ## License
 
@@ -116,4 +114,3 @@ This repository uses **PolyForm Noncommercial 1.0.0**.
 - If commercial use is needed, a separate commercial license or written permission is required from the licensor.
 
 See [LICENSE](./LICENSE) and [NOTICE](./NOTICE).
-
