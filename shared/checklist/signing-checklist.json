@@ -1,8 +1,8 @@
 {
   "schemaVersion": "signing-checklist",
   "stage": "signing",
-  "contentVersion": "2.0.0",
-  "updatedAt": "2026-05-01T00:00:00Z",
+  "contentVersion": "2.1.0",
+  "updatedAt": "2026-05-30T00:00:00Z",
   "categories": [
     {
       "code": "identity_authorization",
@@ -921,6 +921,394 @@
           }
         }
       ]
+    },
+    {
+      "code": "co_living_agreement",
+      "label": "合租协议",
+      "items": [
+        {
+          "code": "roommate_agreement",
+          "label": "合租协议和费用分摊是否书面明确",
+          "oneLine": "合租人之间的租金、押金、公共区域水电燃气费和网费分摊方式需要书面明确。",
+          "whyCheck": "合租人间费用分摊和公共责任如果不提前书面约定，入住后容易产生纠纷，影响合租关系和居住体验。",
+          "howToCheck": [
+            "明确每个合租人应付的租金和押金比例。",
+            "约定公共区域水电燃气费和网费的分摊方式。",
+            "确认公共区域（客厅、厨房、卫生间）的打扫频率和负责人。",
+            "协商访客留宿的规则和通知义务。",
+            "商定一方提前搬走的过渡安排和费用处理。"
+          ],
+          "riskSignals": [
+            "合租人之间没有任何书面约定，完全靠口头商量。",
+            "中介或二房东分配费用不透明，各人交的钱不一样但不知情。",
+            "公共费用分摊方式模糊（如按人头还是按房间）。",
+            "合租人频繁变动，无长期合租人稳定性保障。"
+          ],
+          "captureAdvice": [
+            "合租协议或费用分摊的书面记录截图。",
+            "公共区域状况照片（入住前留证）。"
+          ],
+          "recordAdvice": "记录每位合租人的租金份额、公共费用分摊规则和公共区域打扫约定。",
+          "referenceLinks": [],
+          "priority": "high",
+          "analysisMapping": {
+            "dimensions": [
+              "promisesAttachments"
+            ]
+          }
+        },
+        {
+          "code": "guest_cleaning_rules",
+          "label": "访客和公共区域卫生规则是否约定",
+          "oneLine": "明确访客留宿限制、公共区域打扫排班和倒垃圾等日常卫生规则。",
+          "whyCheck": "合租中最常见的摩擦源是公共区域卫生和访客问题，提前约定可大幅减少矛盾。",
+          "howToCheck": [
+            "约定访客留宿是否需要提前通知、最长留宿天数。",
+            "制定公共区域（厨房、卫生间、客厅）打扫排班表。",
+            "明确垃圾丢弃责任和频率。",
+            "约定噪音控制时间（尤其是夜间和清晨）。"
+          ],
+          "riskSignals": [
+            "无任何公共区域卫生约定，全靠自觉。",
+            "已有合租人对卫生标准有明显分歧。",
+            "合租人频繁带人回来但从不提前通知。",
+            "厨房水槽和垃圾桶长期无人清理。"
+          ],
+          "captureAdvice": [],
+          "recordAdvice": "记录访客规则、卫生排班和公共区域使用约定。",
+          "referenceLinks": [],
+          "priority": "medium",
+          "analysisMapping": {
+            "dimensions": [
+              "promisesAttachments"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "code": "rent_stability",
+      "label": "租期稳定性",
+      "items": [
+        {
+          "code": "renewal_rule",
+          "label": "续租涨价规则是否明确",
+          "oneLine": "合同应写明期满续租的租金调整幅度上限和提前通知期限。",
+          "whyCheck": "没有续租涨价条款，房东可能在期满后大幅涨价或拒绝续租，租客被迫搬家。",
+          "howToCheck": [
+            "看合同是否写明了续租条件和租金调整方式。",
+            "确认续租涨幅是否有上限（如不超过市场涨幅的5%-10%）。",
+            "确认续租需提前多少天通知。",
+            "如果没有明确条款，与房东协商并写入补充协议。"
+          ],
+          "riskSignals": [
+            "合同完全未提及续租事宜。",
+            "房东表示到时候再说或看行情。",
+            "口头承诺不涨价但不愿写入合同。",
+            "周边房源租金近期涨幅较大。"
+          ],
+          "captureAdvice": [
+            "续租条款截图或补充协议截图。",
+            "房东关于续租的口头承诺聊天记录截图。"
+          ],
+          "recordAdvice": "摘录续租条款和房东关于涨价的承诺。",
+          "referenceLinks": [],
+          "priority": "high",
+          "analysisMapping": {
+            "dimensions": [
+              "leaseTermExit"
+            ]
+          }
+        },
+        {
+          "code": "sale_viewing_rule",
+          "label": "房东卖房带看规则是否约定",
+          "oneLine": "租期内如房东卖房需带看，应约定提前通知时限、频率限制和合理补偿。",
+          "whyCheck": "房东卖房频繁带看会严重影响租客正常生活，提前约定可保护租客权益。",
+          "howToCheck": [
+            "询问房东近期是否有卖房计划。",
+            "约定带看需提前多少小时通知（建议至少24小时）。",
+            "约定每周带看次数上限和时段限制。",
+            "协商因频繁带看影响居住的补偿方式（如减免部分租金）。"
+          ],
+          "riskSignals": [
+            "房东拒绝讨论卖房带看规则。",
+            "房源已在多家中介挂牌，带看可能频繁。",
+            "合同未提及带看规则且房东保留钥匙。"
+          ],
+          "captureAdvice": [
+            "带看规则约定截图或补充协议。"
+          ],
+          "recordAdvice": "记录和房东约定的带看通知、频率和补偿条款。",
+          "referenceLinks": [],
+          "priority": "medium",
+          "analysisMapping": {
+            "dimensions": [
+              "leaseTermExit"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "code": "entry_rules",
+      "label": "进入规则",
+      "items": [
+        {
+          "code": "landlord_entry",
+          "label": "房东进入房屋是否需提前通知",
+          "oneLine": "明确房东或中介进入房屋的通知时限（建议至少24小时）和条件。",
+          "whyCheck": "房东未经通知擅自进入涉及租客隐私和安全感，对独居和女性租客尤其重要。",
+          "howToCheck": [
+            "确认合同是否写明房东进入需提前通知的时限。",
+            "约定紧急情况下（如漏水、漏气）的通知方式。",
+            "确认房东是否保留房屋钥匙以及使用条件。",
+            "如果合同未涉及，要求写入补充条款。"
+          ],
+          "riskSignals": [
+            "合同未提及房东进入通知义务。",
+            "房东表示我的房子我随时可以进。",
+            "房东保留备用钥匙且不愿承诺通知义务。",
+            "中介或管理人员有擅自进入的习惯。"
+          ],
+          "captureAdvice": [
+            "进入通知条款截图。",
+            "与房东关于进入规则的聊天记录截图。"
+          ],
+          "recordAdvice": "记录进入通知时限、紧急进入规则和钥匙管理约定。",
+          "referenceLinks": [],
+          "priority": "high",
+          "analysisMapping": {
+            "dimensions": [
+              "leaseTermExit"
+            ]
+          }
+        },
+        {
+          "code": "repair_entry",
+          "label": "维修上门规则是否约定",
+          "oneLine": "维修人员上门的通知、陪同和临时钥匙管理规则应在合同中明确。",
+          "whyCheck": "维修人员进入时如果租客不在场，涉及财产安全和隐私保护。",
+          "howToCheck": [
+            "确认维修是否需租客在场陪同。",
+            "如果租客无法在场，约定临时钥匙的交接和管理方式。",
+            "确认维修时间段限制（避免夜间或休息时间）。",
+            "约定维修后的卫生清理责任。"
+          ],
+          "riskSignals": [
+            "房东表示维修时不需要通知租客。",
+            "物业或维修人员持有通用钥匙可随时进入。",
+            "无维修时段限制，可能在晚间或清晨安排维修。"
+          ],
+          "captureAdvice": [
+            "维修规则条款截图。"
+          ],
+          "recordAdvice": "记录维修通知、陪同和钥匙管理约定。",
+          "referenceLinks": [],
+          "priority": "medium",
+          "analysisMapping": {
+            "dimensions": [
+              "maintenanceResponsibility"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "code": "school_and_stability",
+      "label": "学区与稳定",
+      "items": [
+        {
+          "code": "school_material_commitment",
+          "label": "居住证和入学材料配合是否写入",
+          "oneLine": "房东配合办理居住证、提供入学所需房产证明等材料的义务应写入合同。",
+          "whyCheck": "子女入学需要房东配合提供材料，不写入合同则房东可能不配合或额外收费。",
+          "howToCheck": [
+            "确认入学是否需要房东提供房产证复印件、租赁备案证明等。",
+            "将房东配合义务写入合同或补充协议。",
+            "确认办理居住证所需的房东材料和配合程度。",
+            "了解学区名额使用情况和入学顺位规则。"
+          ],
+          "riskSignals": [
+            "房东拒绝配合办理居住证或提供入学材料。",
+            "房东表示配合但需额外收费。",
+            "学区名额已被使用或存在排队。",
+            "租赁合同未备案导致无法办理居住证。"
+          ],
+          "captureAdvice": [
+            "房东配合承诺的聊天记录或书面约定截图。",
+            "学区信息和入学政策截图。"
+          ],
+          "recordAdvice": "记录入学所需材料清单和房东配合承诺。",
+          "referenceLinks": [],
+          "priority": "high",
+          "analysisMapping": {
+            "dimensions": [
+              "promisesAttachments"
+            ]
+          }
+        },
+        {
+          "code": "long_term_stability",
+          "label": "租期稳定和续租保障是否足够",
+          "oneLine": "考虑签订至少两年租期或约定优先续租权，避免因搬家影响孩子上学。",
+          "whyCheck": "孩子上学期间频繁搬家会影响学习稳定性，需要确保租期能覆盖关键学段。",
+          "howToCheck": [
+            "争取签订较长租期（两年或以上）或约定优先续租权。",
+            "确认续租时租金调整上限和提前通知期限。",
+            "评估房东卖房或收回自住的风险。",
+            "了解周边同类房源的供应情况作为备选。"
+          ],
+          "riskSignals": [
+            "房东只愿签一年且不愿承诺续租条件。",
+            "房东有明确卖房计划。",
+            "周边同类房源供应紧张，搬家选择少。"
+          ],
+          "captureAdvice": [
+            "租期和续租条款截图。"
+          ],
+          "recordAdvice": "记录租期长度、续租保障条款和备选房源。",
+          "referenceLinks": [],
+          "priority": "high",
+          "analysisMapping": {
+            "dimensions": [
+              "leaseTermExit"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "code": "medical_stability",
+      "label": "医疗稳定性",
+      "items": [
+        {
+          "code": "early_termination",
+          "label": "提前退租规则是否可接受",
+          "oneLine": "因病情变化等不可预见原因需要提前退租时，违约金和押金处理是否合理。",
+          "whyCheck": "健康状况变化可能导致需要换房或退租，提前了解违约责任可以评估风险。",
+          "howToCheck": [
+            "确认合同中的提前退租条款和违约金比例。",
+            "与房东协商因健康原因退租的特殊处理方式（如提供医生证明减免违约金）。",
+            "确认押金退还条件和时限。",
+            "了解转租是否被允许作为替代方案。"
+          ],
+          "riskSignals": [
+            "违约金高达2-3个月租金。",
+            "提前退租不仅不退押金还需支付剩余全部租金。",
+            "房东明确拒绝任何特殊情况的退租协商。",
+            "不允许转租且违约金苛刻。"
+          ],
+          "captureAdvice": [
+            "提前退租条款截图。",
+            "与房东关于特殊退租条件的聊天记录。"
+          ],
+          "recordAdvice": "摘录退租违约金、押金退还条件和特殊情况处理约定。",
+          "referenceLinks": [],
+          "priority": "high",
+          "analysisMapping": {
+            "dimensions": [
+              "leaseTermExit"
+            ]
+          }
+        },
+        {
+          "code": "emergency_contact",
+          "label": "紧急联系人和维修响应约定",
+          "oneLine": "约定紧急联系人信息和关键维修（水电、取暖、空调）的24小时响应时限。",
+          "whyCheck": "健康原因可能对居住环境有更高要求，水电暖气空调等设施故障需要快速响应。",
+          "howToCheck": [
+            "记录房东、物业、附近医院和水电燃气抢修电话。",
+            "约定暖气、空调、热水器等关键设备的维修响应时限。",
+            "确认冬季取暖和夏季制冷的备用方案。",
+            "了解小区无障碍通道和电梯的运行情况。"
+          ],
+          "riskSignals": [
+            "合同无维修响应时限约定。",
+            "房东只有一人且经常联系不上。",
+            "老旧小区供暖或供电不稳定。",
+            "无备用取暖或制冷方案。"
+          ],
+          "captureAdvice": [
+            "紧急联系方式清单截图。",
+            "维修响应条款截图。"
+          ],
+          "recordAdvice": "记录所有紧急联系方式、维修响应承诺和备用方案。",
+          "referenceLinks": [],
+          "priority": "high",
+          "analysisMapping": {
+            "dimensions": [
+              "maintenanceResponsibility"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "code": "pet_clause",
+      "label": "宠物条款",
+      "items": [
+        {
+          "code": "pet_deposit",
+          "label": "宠物押金和清洁费是否约定",
+          "oneLine": "如养宠物，额外宠物押金金额、退租清洁费标准和扣除条件需提前书面明确。",
+          "whyCheck": "宠物相关押金和清洁费如果不提前约定，退租时容易被不合理扣款。",
+          "howToCheck": [
+            "确认是否需要额外支付宠物押金及其金额。",
+            "明确退租时宠物清洁费的收费标准和扣除条件。",
+            "约定宠物造成损坏的维修责任和费用承担方式。",
+            "确认押金退还时宠物相关费用的扣除上限。"
+          ],
+          "riskSignals": [
+            "房东口头说养宠物多交点押金就行但不写进合同。",
+            "宠物押金金额模糊或与其他费用混在一起。",
+            "退租时以宠物为由高额扣押金。",
+            "清洁费标准不明确（如按实际情况收取）。"
+          ],
+          "captureAdvice": [
+            "宠物押金和清洁费条款截图。",
+            "宠物相关费用约定的聊天记录截图。"
+          ],
+          "recordAdvice": "记录宠物押金金额、清洁费标准和损坏赔偿约定。",
+          "referenceLinks": [],
+          "priority": "high",
+          "analysisMapping": {
+            "dimensions": [
+              "promisesAttachments"
+            ]
+          }
+        },
+        {
+          "code": "pet_damage",
+          "label": "宠物损坏赔偿和禁止事项是否明确",
+          "oneLine": "明确宠物造成损坏的赔偿标准、禁止进入的区域和不允许的行为。",
+          "whyCheck": "宠物损坏的赔偿标准和禁止事项不明确，退租时可能产生高额索赔。",
+          "howToCheck": [
+            "确认宠物造成家具、墙壁、地板损坏的赔偿标准。",
+            "明确宠物禁止进入的区域（如卧室铺地毯区域、公共区域等）。",
+            "约定宠物噪音（吠叫）的处理方式。",
+            "确认是否需要为宠物购买责任保险。"
+          ],
+          "riskSignals": [
+            "合同笼统写宠物造成的一切损失由租客承担但未定义损失评估标准。",
+            "没有宠物禁止事项清单，退租时随意扣款。",
+            "邻里已有宠物投诉先例。",
+            "地板和家具材质不适合养宠物（如全屋实木地板）。"
+          ],
+          "captureAdvice": [
+            "宠物损坏赔偿条款截图。",
+            "房屋现状照片（入住前留证，便于退租时区分宠物损坏和原有损坏）。"
+          ],
+          "recordAdvice": "记录宠物损坏赔偿标准、禁止区域和行为约定。",
+          "referenceLinks": [],
+          "priority": "high",
+          "analysisMapping": {
+            "dimensions": [
+              "promisesAttachments"
+            ]
+          }
+        }
+      ]
     }
   ],
   "templateModules": [
@@ -1010,26 +1398,53 @@
       "code": "signing.entry_rules",
       "label": "房东进入权限",
       "reason": "独居和女性租客需明确房东进入房屋和带看规则",
-      "itemCodes": [
-        "renewal_rent_increase_entry"
-      ],
-      "alwaysEnabled": false
+      "alwaysEnabled": false,
+      "categoryCodes": [
+        "entry_rules"
+      ]
     },
     {
       "code": "signing.pet_clause",
       "label": "宠物条款",
       "reason": "宠物相关纠纷通常在合同没有提前写清时发生",
-      "itemCodes": [
-        "special_living_rules"
-      ],
-      "alwaysEnabled": false
+      "alwaysEnabled": false,
+      "categoryCodes": [
+        "pet_clause"
+      ]
     },
     {
       "code": "signing.co_living_agreement",
       "label": "合租协议",
       "reason": "合租费用和公共责任需要书面化",
-      "itemCodes": [
-        "sublease_guest_rule"
+      "alwaysEnabled": false,
+      "categoryCodes": [
+        "co_living_agreement"
+      ]
+    },
+    {
+      "code": "signing.rent_stability",
+      "label": "租期与续租稳定性",
+      "reason": "租期稳定性和续租涨价规则对有子女或需要长期稳定的租客至关重要",
+      "categoryCodes": [
+        "rent_stability"
+      ],
+      "alwaysEnabled": false
+    },
+    {
+      "code": "signing.school_and_stability",
+      "label": "学区与稳定保障",
+      "reason": "子女入学需要的材料和租期保障对有孩家庭关系重大",
+      "categoryCodes": [
+        "school_and_stability"
+      ],
+      "alwaysEnabled": false
+    },
+    {
+      "code": "signing.medical_stability",
+      "label": "医疗稳定性保障",
+      "reason": "对有医疗需求的租客需额外关注退租灵活性和维修响应",
+      "categoryCodes": [
+        "medical_stability"
       ],
       "alwaysEnabled": false
     }
