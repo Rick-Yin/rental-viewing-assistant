@@ -117,8 +117,18 @@
     body.dark .shadow { box-shadow: 0 1px 3px rgba(0,0,0,0.5); }
     body.dark #dark-mode-toggle { background: #D0BCFF; }
     body.dark #dark-mode-toggle span { transform: translateX(20px); background: #381E72; }
-    .poster-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 60; padding: 16px; }
+    .poster-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: flex-start; justify-content: center; z-index: 60; padding: 24px 16px; overflow-y: auto; }
     .poster-overlay.show { display: flex; }
+    .guide-overlay { position: fixed; inset: 0; display: none; z-index: 70; pointer-events: auto; }
+    .guide-overlay.show { display: block; }
+    .guide-dim { position: absolute; inset: 0; background: rgba(28,27,31,0.55); pointer-events: auto; }
+    .guide-highlight { position: absolute; border: 2px solid #FFD166; border-radius: 16px; box-shadow: 0 0 0 9999px rgba(28,27,31,0.50), 0 0 0 6px rgba(255,209,102,0.18); transition: all 0.2s; pointer-events: auto; }
+    .guide-arrow { position: absolute; width: 2px; background: #FFD166; transform-origin: top center; pointer-events: none; }
+    .guide-arrow::after { content: ''; position: absolute; left: 50%; bottom: -1px; width: 10px; height: 10px; border-right: 2px solid #FFD166; border-bottom: 2px solid #FFD166; transform: translateX(-50%) rotate(45deg); }
+    .guide-bubble { position: absolute; max-width: 260px; background: #FFFBFE; color: #1C1B1F; border-radius: 18px; padding: 14px; box-shadow: 0 8px 28px rgba(0,0,0,0.25); pointer-events: auto; }
+    .guide-dot { width: 26px; height: 26px; border-radius: 999px; background: #6750A4; color: white; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+    .guide-controls { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); width: calc(100% - 32px); max-width: 358px; background: #FFFBFE; color: #1C1B1F; border-radius: 22px; padding: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.28); pointer-events: auto; }
+    .guide-demo-badge { position: fixed; top: 12px; left: 50%; transform: translateX(-50%); z-index: 71; background: #3E2E00; color: #FFDEA6; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 500; pointer-events: none; }
   </style>
 </head>
 <body class="bg-md-surface text-md-on-surface">
@@ -134,7 +144,7 @@
             <h1 class="text-2xl font-bold text-md-on-surface">开始看房前</h1>
             <p class="text-sm text-md-on-surface-variant mt-1">先设定你的租房条件，后面的 checklist 会按场景变轻或变细。</p>
           </div>
-          <button class="text-sm text-md-primary font-medium shrink-0" onclick="finishOnboarding('page-list')">跳过</button>
+          <button class="h-10 px-3 text-sm text-md-primary font-medium shrink-0 rounded-full hover:bg-md-surface-variant" onclick="finishOnboarding('page-list')">跳过</button>
         </div>
       </div>
 
@@ -180,9 +190,8 @@
           <button class="mt-4 w-full py-3 border border-md-primary text-md-primary rounded-full text-sm font-medium" onclick="openGuide('page-onboarding')">查看使用指引</button>
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
-          <button class="py-3 border border-md-outline text-md-on-surface-variant rounded-full text-sm font-medium" onclick="loadSampleData()">查看示例数据</button>
-          <button class="py-3 border border-md-outline text-md-on-surface-variant rounded-full text-sm font-medium" onclick="finishOnboarding('page-list')">直接进入</button>
+        <div>
+          <button class="w-full py-3 border border-md-outline text-md-on-surface-variant rounded-full text-sm font-medium" onclick="finishOnboarding('page-list')">直接进入</button>
         </div>
       </div>
     </div>
@@ -251,6 +260,27 @@
       </div>
     </div>
 
+    <!-- ========== Page: Guide Complete ========== -->
+    <div id="page-guide-complete" class="page">
+      <div class="px-4 pt-14 pb-4">
+        <h1 class="text-2xl font-bold text-md-on-surface">准备开始了</h1>
+        <p class="text-sm text-md-on-surface-variant mt-1">你刚看完一套示例流程。现在可以添加自己的第一套房源，也可以先保留示例继续试用。</p>
+      </div>
+      <div class="px-4 py-2 space-y-3">
+        <div class="bg-md-primary-container text-md-on-primary-container rounded-md3-md p-4">
+          <p class="text-sm font-bold">建议从真实房源开始</p>
+          <p class="text-xs mt-1 opacity-80">只填小区、月租、押付和户型也可以。现场看房、风险和照片可以之后再补。</p>
+          <button class="mt-4 w-full py-3 bg-md-primary text-md-on-primary rounded-full text-sm font-medium elevation-1" onclick="finishGuideAndAddProperty()">添加第一套房源</button>
+        </div>
+        <div class="bg-md-surface elevation-1 rounded-md3-md p-4">
+          <p class="text-sm font-medium">还想继续熟悉流程？</p>
+          <p class="text-xs text-md-on-surface-variant mt-1">保留示例数据后，你可以继续试用对比、海报和签约核查。示例数据可稍后删除。</p>
+          <button class="mt-4 w-full py-3 border border-md-primary text-md-primary rounded-full text-sm font-medium" onclick="keepGuideSampleData()">保留示例继续体验</button>
+        </div>
+        <button id="guide-empty-list-btn" class="w-full py-3 text-md-on-surface-variant rounded-full text-sm font-medium" onclick="finishGuideWithEmptyList()">不保留示例，进入空列表</button>
+      </div>
+    </div>
+
     <!-- ========== Page: Property List ========== -->
     <div id="page-list" class="page">
       <!-- Top App Bar -->
@@ -306,11 +336,11 @@
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
             <span class="text-xs font-medium">房源</span>
           </div>
-          <div class="flex flex-col items-center gap-0.5 text-md-on-surface-variant cursor-pointer" onclick="showPage('page-compare')">
+          <div class="flex flex-col items-center gap-0.5 text-md-on-surface-variant cursor-pointer" data-guide-target="bottom-compare" onclick="showPage('page-compare')">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
             <span class="text-xs">对比</span>
           </div>
-          <div class="flex flex-col items-center gap-0.5 text-md-on-surface-variant cursor-pointer" onclick="showPage('page-settings')">
+          <div class="flex flex-col items-center gap-0.5 text-md-on-surface-variant cursor-pointer" data-guide-target="bottom-settings" onclick="showPage('page-settings')">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
             <span class="text-xs">设置</span>
           </div>
@@ -933,7 +963,7 @@
 
   <div id="poster-overlay" class="poster-overlay" onclick="if(event.target===this)closePoster()">
     <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
-      <div id="poster-content" style="width:340px;max-height:80vh;overflow-y:auto;border-radius:20px;overflow:hidden;"></div>
+      <div id="poster-content" style="width:360px;max-width:calc(100vw - 32px);height:640px;border-radius:24px;overflow:hidden;"></div>
       <div class="flex gap-3">
         <button onclick="downloadPoster()" style="background:white;color:#6750A4;padding:10px 24px;border-radius:28px;font-size:14px;font-weight:500;border:none;cursor:pointer;">保存图片</button>
         <button onclick="closePoster()" style="background:rgba(255,255,255,0.2);color:white;padding:10px 24px;border-radius:28px;font-size:14px;border:1px solid rgba(255,255,255,0.5);cursor:pointer;">关闭</button>
@@ -942,6 +972,15 @@
   </div>
 
   <div id="toast" class="toast"></div>
+
+  <div id="guide-overlay" class="guide-overlay">
+    <div class="guide-dim"></div>
+    <div id="guide-highlight" class="guide-highlight"></div>
+    <div id="guide-arrow" class="guide-arrow"></div>
+    <div id="guide-bubble" class="guide-bubble"></div>
+    <div id="guide-controls" class="guide-controls"></div>
+    <div id="guide-demo-badge" class="guide-demo-badge">示例指引模式</div>
+  </div>
 
   <!-- Add Material Menu -->
   <div id="material-menu-overlay" class="menu-overlay" onclick="hideAddMaterialMenu()">
@@ -1116,7 +1155,13 @@
     let compareSortState = null;
     let profileEntryMode = 'settings';
     let guideBackPage = 'page-onboarding';
+    let guideCompletionSnapshot = null;
+    let guideDemoMode = false;
+    let guideStepIndex = 0;
+    let guideSnapshot = null;
+    let guideSteps = [];
     let onboardingDone = false;
+    let sampleDataActive = false;
     let userProfile = { budgetMin: null, budgetMax: null, role: [], gender: ['不填写'], living: [], pet: ['无宠物'], children: ['无孩子'], purpose: [], district: '' };
     let profileDraft = null;
     let profileTemplateDraft = null;
@@ -1137,10 +1182,16 @@
     try { const saved = localStorage.getItem('templateSettings'); if (saved) templateSettings = Object.assign(getDefaultTemplateSettings(), JSON.parse(saved)); } catch(e) {}
     try { const saved = localStorage.getItem('userProfile'); if (saved) userProfile = JSON.parse(saved); } catch(e) {}
     try { onboardingDone = localStorage.getItem('onboardingDone') === '1'; } catch(e) {}
+    try { sampleDataActive = localStorage.getItem('sampleDataActive') === '1'; } catch(e) {}
 
     function saveData() {
+      if (guideDemoMode) return;
       try { localStorage.setItem('properties', JSON.stringify(properties)); } catch(e) {}
       try { localStorage.setItem('userProfile', JSON.stringify(userProfile)); } catch(e) {}
+      try {
+        if (sampleDataActive) localStorage.setItem('sampleDataActive', '1');
+        else localStorage.removeItem('sampleDataActive');
+      } catch(e) {}
     }
 
     // ==================== HELPERS ====================
@@ -1154,6 +1205,144 @@
     }
     function getPropertyUncertainCount(p) {
       return p.viewings.reduce((s,v) => s + Object.values(v.checklistResults||{}).filter(r=>r==='uncertain').length, 0);
+    }
+    function findChecklistItem(code, categories) {
+      for (const cat of categories) {
+        const item = cat.items.find(x => x.code === code);
+        if (item) return { ...item, categoryLabel: cat.label };
+      }
+      return null;
+    }
+    function getPropertyAttentionItems(p) {
+      const items = [];
+      (p.viewings || []).forEach(v => {
+        Object.entries(v.checklistResults || {}).forEach(([code, state]) => {
+          if (state !== 'risk' && state !== 'uncertain') return;
+          const item = findChecklistItem(code, viewingCategories);
+          items.push({
+            code,
+            state,
+            label: item?.label || code,
+            oneLine: item?.oneLine || '',
+            priority: item?.priority || 'medium',
+            source: 'viewing'
+          });
+        });
+      });
+      Object.entries(p.signingChecklistResults || {}).forEach(([code, state]) => {
+        if (state !== 'risk' && state !== 'uncertain') return;
+        const item = findChecklistItem(code, signingCategories);
+        items.push({
+          code,
+          state,
+          label: item?.label || code,
+          oneLine: item?.oneLine || '',
+          priority: item?.priority || 'medium',
+          source: 'signing'
+        });
+      });
+      return items.sort((a, b) => {
+        const stateScore = x => x.state === 'risk' ? 2 : 1;
+        const priorityScore = x => x.priority === 'high' ? 2 : x.priority === 'medium' ? 1 : 0;
+        return stateScore(b) - stateScore(a) || priorityScore(b) - priorityScore(a);
+      });
+    }
+    function getPropertyTopRiskInsight(p) {
+      const top = getPropertyAttentionItems(p)[0];
+      if (!top) return { level: 'ok', label: '暂无明显阻断项', detail: '继续补齐看房记录和材料即可。' };
+      const prefix = top.state === 'risk' ? '最高风险' : '待确认';
+      return {
+        level: top.state,
+        label: `${prefix}：${top.label}`,
+        detail: top.oneLine || (top.state === 'risk' ? '建议先处理后再推进。' : '建议补充确认后再判断。')
+      };
+    }
+    function getPropertyPrimaryAction(p) {
+      const attention = getPropertyAttentionItems(p);
+      const signingRisk = attention.find(item => item.source === 'signing' && item.state === 'risk');
+      const viewingRisk = attention.find(item => item.source === 'viewing' && item.state === 'risk');
+      if (p.status === 'signing') {
+        if (signingRisk) return { label: '先处理签前风险', reason: signingRisk.label, action: `currentPropertyId=${p.id};showPage('page-signing-overview')`, style: 'warning' };
+        return { label: '进入签约总览', reason: '继续核对材料、条款和入住准备', action: `currentPropertyId=${p.id};showPage('page-signing-overview')`, style: 'primary' };
+      }
+      if (p.status === 'shortlisted') {
+        if (viewingRisk) return { label: '先复核看房风险', reason: viewingRisk.label, action: `propertyDetailBackPage='page-list';currentPropertyId=${p.id};showPage('page-property-detail')`, style: 'warning' };
+        return { label: '进入对比决策', reason: '候选房源，适合和其他房源一起比较', action: `showPage('page-compare')`, style: 'primary' };
+      }
+      if (p.status === 'rejected') return { label: '查看排除原因', reason: p.rejectReason || '已排除，必要时可恢复候选', action: `propertyDetailBackPage='page-list';currentPropertyId=${p.id};showPage('page-property-detail')`, style: 'muted' };
+      if ((p.viewings || []).length === 0) return { label: '记录首次看房', reason: '先补现场观察和 checklist', action: `currentPropertyId=${p.id};showPage('page-viewing-edit')`, style: 'primary' };
+      if (viewingRisk) return { label: '复核风险证据', reason: viewingRisk.label, action: `propertyDetailBackPage='page-list';currentPropertyId=${p.id};showPage('page-property-detail')`, style: 'warning' };
+      return { label: '查看详情', reason: '补充照片、备注或加入候选', action: `propertyDetailBackPage='page-list';currentPropertyId=${p.id};showPage('page-property-detail')`, style: 'primary' };
+    }
+    function getSigningActionAdvice(item) {
+      const templates = {
+        counterparty_identity: {
+          ask: '请对方提供身份证明，并确认签约人、收款人和合同主体是否一致。',
+          clause: '合同中写明签约主体姓名、证件号、收款账户及不一致时的责任。',
+          material: '身份证/营业执照、收款账户截图、经办人授权。',
+          avoid: '主体和收款账户未核对前，不建议支付定金或押金。'
+        },
+        rental_authority: {
+          ask: '如果不是产权人签约，请提供产权人授权和可出租证明。',
+          clause: '写明出租人有合法出租权；授权瑕疵导致无法入住时，应退还已付款并承担违约责任。',
+          material: '授权委托书、产权人身份证、产权证或不动产权证。',
+          avoid: '授权链不完整前，不建议进入付款节点。'
+        },
+        property_rights_risk: {
+          ask: '请确认房屋是否存在抵押、查封、居住权或其他影响出租的权利限制。',
+          clause: '写明房屋权利状态真实，若权利瑕疵影响入住或续租，出租方承担相应责任。',
+          material: '不动产权证、权利状态查询截图、产权人确认记录。',
+          avoid: '权利状态未确认前，不建议支付大额款项。'
+        },
+        rent_loan_risk: {
+          ask: '请确认付款安排是否涉及租金贷、分期贷或第三方金融协议。',
+          clause: '合同写明租金支付方式，不另行绑定贷款、分期或金融服务。',
+          material: '付款页面截图、合同付款条款、平台费用说明。',
+          avoid: '不要在未理解金融条款前签署额外协议。'
+        },
+        fund_supervision: {
+          ask: '请确认押金和租金是否有托管、监管或明确退还路径。',
+          clause: '写明押金金额、退还时间、扣除条件和争议处理方式。',
+          material: '押金收据、转账记录、托管或监管说明。',
+          avoid: '不要接受只口头承诺押金退还。'
+        },
+        renewal_rent_increase_entry: {
+          ask: '请确认续租优先权、涨价上限、提前收房条件和通知期限。',
+          clause: '写明续租协商期限、涨价规则、房东提前收房的补偿和通知期。',
+          material: '合同续租条款、聊天确认记录。',
+          avoid: '长期居住需求下，不要只接受“到期再说”。'
+        },
+        maintenance_boundary: {
+          ask: '请确认自然损坏、人为损坏和设备故障分别由谁维修、多久响应。',
+          clause: '写明维修责任、响应时限、费用承担和临时无法居住时的处理方式。',
+          material: '家具家电清单、现状照片、维修承诺聊天记录。',
+          avoid: '不要把空调、热水器等关键设备维修只停留在口头。'
+        },
+        promises_written: {
+          ask: '请把清洗空调、维修、换锁、养宠等承诺逐条确认。',
+          clause: '将每项口头承诺写入补充协议，明确完成时间和未完成处理。',
+          material: '聊天记录、补充协议、交付前后照片。',
+          avoid: '不要把影响入住的承诺只留在聊天口头层面。'
+        },
+        handover_inventory: {
+          ask: '请一起核对家具家电、钥匙门禁、水电气表读数和已有损坏。',
+          clause: '交割清单作为合同附件，写明数量、状态、读数和双方确认。',
+          material: '交割清单、表具照片、家具家电照片。',
+          avoid: '不要在未拍照留证时直接确认交割完成。'
+        },
+        supplementary_agreement: {
+          ask: '请确认补充协议是否与主合同冲突，以及冲突时以哪份为准。',
+          clause: '写明补充协议效力、适用顺序和双方签字确认。',
+          material: '主合同、补充协议、双方签字页。',
+          avoid: '不要签含糊或和主合同冲突的补充条款。'
+        }
+      };
+      return templates[item.code] || {
+        ask: `请围绕「${item.label}」让对方给出明确书面答复。`,
+        clause: `将「${item.label}」的责任、期限和违约处理写入合同或补充协议。`,
+        material: '保留合同条款、聊天记录、照片或平台页面截图。',
+        avoid: '关键信息未写清前，不建议推进到付款或签字。'
+      };
     }
     function cloneTemplateSettings(settings = templateSettings) {
       return Object.assign(getDefaultTemplateSettings(), settings || {});
@@ -1232,6 +1421,48 @@
       markOnboardingDone();
       showPage(dest || 'page-list');
     }
+    function finishGuideAndAddProperty() {
+      const shouldClearSample = !!guideCompletionSnapshot?.realSampleActive;
+      properties = shouldClearSample ? [] : JSON.parse(JSON.stringify(guideCompletionSnapshot?.realProperties || []));
+      sampleDataActive = false;
+      currentPropertyId = null;
+      currentFilter = 'all';
+      budgetFilter = false;
+      listSortState = null;
+      compareSortState = null;
+      guideCompletionSnapshot = null;
+      markOnboardingDone();
+      editPropertyId = null;
+      showPage('page-add-property');
+    }
+    function finishGuideWithEmptyList() {
+      const shouldClearSample = !!guideCompletionSnapshot?.realSampleActive;
+      properties = shouldClearSample ? [] : JSON.parse(JSON.stringify(guideCompletionSnapshot?.realProperties || []));
+      sampleDataActive = false;
+      currentPropertyId = properties[0]?.id || null;
+      currentFilter = 'all';
+      budgetFilter = false;
+      listSortState = null;
+      compareSortState = null;
+      guideCompletionSnapshot = null;
+      markOnboardingDone();
+      saveData();
+      showPage('page-list');
+    }
+    function keepGuideSampleData() {
+      properties = JSON.parse(JSON.stringify(sampleProperties));
+      sampleDataActive = true;
+      currentPropertyId = properties.find(p => p.status === 'signing')?.id || properties[0]?.id || null;
+      currentFilter = 'all';
+      budgetFilter = false;
+      listSortState = null;
+      compareSortState = null;
+      guideCompletionSnapshot = null;
+      markOnboardingDone();
+      saveData();
+      showToast('已保留示例数据，可继续体验');
+      showPage('page-list');
+    }
     function resetOnboarding() {
       onboardingDone = false;
       try { localStorage.removeItem('onboardingDone'); } catch(e) {}
@@ -1245,11 +1476,159 @@
       showPage('page-profile');
     }
     function openGuide(fromPage) {
+      startGuideTour(fromPage || 'page-settings');
+    }
+    function buildGuideSteps() {
+      return [
+        { page:'page-list', selector:'#search-input', title:'搜索房源', text:'输入小区、地址或标题，快速缩小房源范围。' },
+        { page:'page-list', selector:'#filter-chips', title:'状态与预算筛选', text:'按候选、签约中、已排除和预算范围过滤列表。' },
+        { page:'page-list', selector:'.sort-chip', title:'排序', text:'点击一次降序，再点升序，第三次取消；各排序项互斥。' },
+        { page:'page-list', selector:'#list-signing-banner', title:'签约中入口', text:'有房源进入签约后，这里会固定展示，方便回到签约总览。', fallback:'.bg-md-surface.elevation-1' },
+        { page:'page-list', selector:'#property-list .bg-md-surface.elevation-1', title:'房源卡片', text:'卡片会优先告诉你下一步动作和当前最高风险。' },
+        { page:'page-list', selector:'button[aria-label="更多操作"]', title:'更多操作', text:'海报、编辑和删除都放在这里。删除是危险操作，真实使用时会弹出确认。' },
+        { page:'page-list', selector:'#add-property-fab', title:'新增房源', text:'随时添加下一套房源。列表为空时会隐藏这个浮动按钮。' },
+        { page:'page-list', selector:'[data-guide-target="bottom-compare"]', title:'进入对比', text:'把可对比房源放在一起看，辅助你收敛选择。' },
+        { page:'page-list', selector:'[data-guide-target="bottom-settings"]', title:'设置与指引', text:'在设置里可以调整画像、模板组合，也可以重新查看这套指引。' },
+        { page:'page-compare', selector:'#compare-content', title:'对比决策', text:'这里会给出推荐推进的房源、关键理由和每套房源的签约入口。' },
+        { page:'page-signing-overview', selector:'#signing-overview-content', title:'签约总览', text:'签约阶段会优先展示阻断项、材料、AI 审查和 checklist。' }
+      ];
+    }
+    function startGuideTour(fromPage) {
       guideBackPage = fromPage || 'page-settings';
-      showPage('page-guide');
+      guideSnapshot = {
+        properties: JSON.parse(JSON.stringify(properties)),
+        currentPropertyId,
+        currentFilter,
+        budgetFilter,
+        listSortState: listSortState ? {...listSortState} : null,
+        compareSortState: compareSortState ? {...compareSortState} : null,
+        sampleDataActive,
+        page: document.querySelector('.page.active')?.id || guideBackPage
+      };
+      guideDemoMode = true;
+      guideStepIndex = 0;
+      guideSteps = buildGuideSteps();
+      properties = JSON.parse(JSON.stringify(sampleProperties));
+      currentPropertyId = properties.find(p => p.status === 'signing')?.id || properties[0]?.id || null;
+      currentFilter = 'all';
+      budgetFilter = false;
+      listSortState = null;
+      compareSortState = null;
+      showPage('page-list');
+      renderGuideOverlay();
+    }
+    function exitGuideTour() {
+      const snapshot = guideSnapshot;
+      const startedFromOnboarding = guideBackPage === 'page-onboarding';
+      const demoProperties = JSON.parse(JSON.stringify(properties));
+      guideDemoMode = false;
+      guideStepIndex = 0;
+      guideSnapshot = null;
+      guideSteps = [];
+      document.getElementById('guide-overlay')?.classList.remove('show');
+      if (snapshot) {
+        properties = snapshot.properties || [];
+        currentPropertyId = snapshot.currentPropertyId;
+        currentFilter = snapshot.currentFilter || 'all';
+        budgetFilter = !!snapshot.budgetFilter;
+        listSortState = snapshot.listSortState || null;
+        compareSortState = snapshot.compareSortState || null;
+      }
+      if (startedFromOnboarding) {
+        guideCompletionSnapshot = {
+          demoProperties,
+          realProperties: JSON.parse(JSON.stringify(snapshot?.properties || [])),
+          realSampleActive: !!snapshot?.sampleDataActive
+        };
+        showPage('page-guide-complete');
+        const emptyBtn = document.getElementById('guide-empty-list-btn');
+        if (emptyBtn) {
+          emptyBtn.textContent = guideCompletionSnapshot.realSampleActive || !guideCompletionSnapshot.realProperties.length
+            ? '不保留示例，进入空列表'
+            : '不保留示例，返回我的房源';
+        }
+      } else {
+        showPage(guideBackPage || 'page-settings');
+      }
+    }
+    function nextGuideStep() {
+      if (!guideDemoMode) return;
+      if (guideStepIndex >= guideSteps.length - 1) { exitGuideTour(); return; }
+      guideStepIndex += 1;
+      const step = guideSteps[guideStepIndex];
+      if (step.page === 'page-compare') showPage('page-compare');
+      if (step.page === 'page-signing-overview') {
+        currentPropertyId = properties.find(p => p.status === 'signing')?.id || properties[0]?.id || null;
+        showPage('page-signing-overview');
+      }
+      renderGuideOverlay();
+    }
+    function prevGuideStep() {
+      if (!guideDemoMode) return;
+      guideStepIndex = Math.max(0, guideStepIndex - 1);
+      const step = guideSteps[guideStepIndex];
+      if (step.page) showPage(step.page);
+      renderGuideOverlay();
+    }
+    function positionGuideElement(el, rect) {
+      if (!el) return;
+      Object.assign(el.style, {
+        left: `${rect.left}px`,
+        top: `${rect.top}px`,
+        width: `${rect.width}px`,
+        height: `${rect.height}px`
+      });
+    }
+    function renderGuideOverlay() {
+      if (!guideDemoMode) return;
+      const overlay = document.getElementById('guide-overlay');
+      const highlight = document.getElementById('guide-highlight');
+      const arrow = document.getElementById('guide-arrow');
+      const bubble = document.getElementById('guide-bubble');
+      const controls = document.getElementById('guide-controls');
+      const step = guideSteps[guideStepIndex];
+      if (!overlay || !highlight || !arrow || !bubble || !controls || !step) return;
+      overlay.classList.add('show');
+      let target = document.querySelector(step.selector);
+      if ((!target || target.offsetParent === null) && step.fallback) target = document.querySelector(step.fallback);
+      const phoneRect = document.querySelector('.max-w-\\[390px\\]')?.getBoundingClientRect() || document.body.getBoundingClientRect();
+      const targetRect = target ? target.getBoundingClientRect() : phoneRect;
+      const padded = {
+        left: Math.max(phoneRect.left + 8, targetRect.left - 6),
+        top: Math.max(8, targetRect.top - 6),
+        width: Math.min(targetRect.width + 12, phoneRect.width - 16),
+        height: Math.max(36, targetRect.height + 12)
+      };
+      positionGuideElement(highlight, padded);
+      const bubbleTop = padded.top + padded.height + 18 < window.innerHeight - 170 ? padded.top + padded.height + 18 : Math.max(76, padded.top - 150);
+      const bubbleLeft = Math.min(Math.max(phoneRect.left + 18, padded.left), phoneRect.right - 278);
+      Object.assign(bubble.style, { left: `${bubbleLeft}px`, top: `${bubbleTop}px` });
+      const arrowX = Math.min(Math.max(padded.left + padded.width / 2, phoneRect.left + 30), phoneRect.right - 30);
+      const arrowY = bubbleTop > padded.top ? padded.top + padded.height : bubbleTop + 120;
+      const arrowHeight = Math.max(24, Math.abs(bubbleTop - arrowY) - 8);
+      Object.assign(arrow.style, {
+        left: `${arrowX}px`,
+        top: `${Math.min(arrowY, bubbleTop - 8)}px`,
+        height: `${arrowHeight}px`,
+        transform: bubbleTop > padded.top ? 'rotate(0deg)' : 'rotate(180deg)'
+      });
+      bubble.innerHTML = `<div class="flex gap-3">
+        <span class="guide-dot">${guideStepIndex + 1}</span>
+        <div><p class="text-sm font-bold">${step.title}</p><p class="text-xs text-md-on-surface-variant mt-1">${step.text}</p></div>
+      </div>`;
+      const endText = guideBackPage === 'page-onboarding' ? '开始使用' : '返回设置';
+      controls.innerHTML = `<div class="flex items-center justify-between gap-3">
+        <div><p class="text-xs text-md-on-surface-variant">步骤 ${guideStepIndex + 1}/${guideSteps.length}</p><p class="text-sm font-medium mt-0.5">${step.title}</p></div>
+        <div class="flex gap-2 shrink-0">
+          <button class="px-3 py-2 rounded-full text-xs text-md-on-surface-variant" onclick="prevGuideStep()" ${guideStepIndex===0?'disabled style="opacity:.4"':''}>上一步</button>
+          <button class="px-3 py-2 rounded-full text-xs border border-md-primary text-md-primary" onclick="exitGuideTour()">${endText}</button>
+          <button class="px-3 py-2 rounded-full text-xs bg-md-primary text-md-on-primary" onclick="nextGuideStep()">${guideStepIndex===guideSteps.length-1?endText:'下一步'}</button>
+        </div>
+      </div>`;
     }
     function loadSampleData() {
       properties = JSON.parse(JSON.stringify(sampleProperties));
+      sampleDataActive = true;
       currentFilter = 'all';
       currentPropertyId = properties[0]?.id || null;
       markOnboardingDone();
@@ -1281,6 +1660,7 @@
       if (pageId === 'page-viewing-edit') renderViewingEdit();
       if (pageId === 'page-calendar') renderCalendar();
       if (pageId === 'page-stats') renderStats();
+      if (guideDemoMode) setTimeout(renderGuideOverlay, 0);
     }
 
     // ==================== RENDER: Property List ====================
@@ -1391,16 +1771,36 @@
         const [label,bg,color] = statusMap[p.status]||['未知','#CAC4D0','#49454F'];
         const op = p.status==='rejected'?'opacity-60':'';
         const click = `propertyDetailBackPage='page-list';currentPropertyId=${p.id}; showPage('page-property-detail')`;
+        const action = getPropertyPrimaryAction(p);
+        const risk = getPropertyTopRiskInsight(p);
+        const riskBg = risk.level === 'risk' ? 'bg-md-error-container text-md-error' : risk.level === 'uncertain' ? 'bg-md-warning-container text-md-warning' : 'bg-md-surface-variant text-md-on-surface-variant';
+        const actionClass = action.style === 'warning'
+          ? 'bg-md-warning-container text-md-warning'
+          : action.style === 'muted'
+            ? 'bg-md-surface-variant text-md-on-surface-variant'
+            : 'bg-md-primary-container text-md-on-primary-container';
         return `<div class="bg-md-surface elevation-1 rounded-md3-md p-4 cursor-pointer ${op}" onclick="${click}" oncontextmenu="event.preventDefault(); showPropertyMenu(${p.id})">
-          <div class="flex justify-between items-start"><div class="flex-1">
-            <div class="flex items-center gap-2"><span class="text-base font-medium">${p.title}</span><span class="chip text-xs !py-0.5 !px-2" style="background:${bg};color:${color};">${label}</span></div>
+          <div class="flex justify-between items-start gap-3"><div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2"><span class="text-base font-medium truncate">${p.title}</span><span class="chip text-xs !py-0.5 !px-2 shrink-0" style="background:${bg};color:${color};">${label}</span></div>
             <p class="text-sm text-md-on-surface-variant mt-0.5">${p.floor} · ${p.orientation} · ${p.area}m²</p>
-          </div><div class="flex items-center gap-1 shrink-0"><span class="text-lg font-bold text-md-primary mr-1">${p.score}</span></div></div>
+          </div><div class="text-right shrink-0"><span class="text-lg font-bold text-md-primary">${p.score}</span><p class="text-[10px] text-md-on-surface-variant">总分</p></div></div>
           <div class="mt-2 flex items-baseline gap-3"><span class="text-xl font-bold text-md-primary">¥${p.rent.toLocaleString()}</span><span class="text-sm text-md-on-surface-variant">/月 · ${p.deposit}</span></div>
-          ${p.status!=='rejected'?`<div class="mt-2 flex items-center gap-4 text-xs text-md-on-surface-variant"><span>最近看房: ${p.viewings[p.viewings.length-1]?.date?.split(' ')[0]||'-'}</span><span class="text-md-error">风险: ${getPropertyRiskCount(p)}</span><span class="text-md-warning">不确定: ${getPropertyUncertainCount(p)}</span></div>`:`<div class="mt-2 text-xs text-md-on-surface-variant">排除原因: ${p.rejectReason||'未填写'}</div>`}
-          <div class="mt-3 pt-2 border-t border-md-outline-variant flex items-center justify-end gap-1">
-            <button aria-label="生成海报" title="生成海报" class="h-8 px-3 flex items-center justify-center rounded-full text-xs text-md-primary hover:bg-md-surface-variant" onclick="event.stopPropagation();generatePoster(${p.id})">海报</button>
-            <button aria-label="删除房源" title="删除房源" class="h-8 px-3 flex items-center justify-center rounded-full text-xs text-md-error hover:bg-md-error-container" onclick="event.stopPropagation();deleteProperty(${p.id})">删除</button>
+          <div class="mt-3 rounded-md3-sm p-3 ${riskBg}">
+            <p class="text-xs font-bold">${risk.label}</p>
+            <p class="text-xs mt-1 opacity-90">${risk.detail}</p>
+          </div>
+          <div class="mt-3 rounded-md3-sm bg-md-surface-variant p-3">
+            <p class="text-xs text-md-on-surface-variant">下一步</p>
+            <div class="mt-1 flex items-center gap-2">
+              <button class="flex-1 min-w-0 text-left px-3 py-2 rounded-full text-xs font-medium ${actionClass}" onclick="event.stopPropagation();${action.action}">${action.label}</button>
+              <button aria-label="更多操作" title="更多操作" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-md-surface" onclick="event.stopPropagation();showPropertyMenu(${p.id})">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+              </button>
+            </div>
+            <p class="text-xs text-md-on-surface-variant mt-2">因：${action.reason}</p>
+          </div>
+          <div class="mt-2 flex items-center gap-3 text-xs text-md-on-surface-variant">
+            ${p.status!=='rejected'?`<span>最近看房 ${p.viewings[p.viewings.length-1]?.date?.split(' ')[0]||'-'}</span><span>风险 ${getPropertyRiskCount(p)}</span><span>不确定 ${getPropertyUncertainCount(p)}</span>`:`<span>排除原因 ${p.rejectReason||'未填写'}</span>`}
           </div>
         </div>`;
       }).join('');
@@ -1457,12 +1857,12 @@
       const topSave = document.getElementById('profile-save-top');
       const mainSave = document.getElementById('profile-save-main');
       if (topSave) {
-        topSave.textContent = fromOnboarding ? '跳过' : '保存';
-        topSave.onclick = fromOnboarding ? () => finishOnboarding('page-list') : () => saveProfile();
+        topSave.textContent = fromOnboarding ? '返回' : '保存';
+        topSave.onclick = fromOnboarding ? () => showPage('page-onboarding') : () => saveProfile();
       }
       if (mainSave) {
-        mainSave.textContent = fromOnboarding ? '保存画像并开始' : '保存并返回设置';
-        mainSave.onclick = () => saveProfile(fromOnboarding ? 'page-list' : 'page-settings');
+        mainSave.textContent = fromOnboarding ? '保存并返回' : '保存并返回设置';
+        mainSave.onclick = () => saveProfile(fromOnboarding ? 'page-onboarding' : 'page-settings');
       }
       document.getElementById('profile-budget-min').value = profileDraft.budgetMin || '';
       document.getElementById('profile-budget-max').value = profileDraft.budgetMax || '';
@@ -1688,7 +2088,6 @@
       userProfile = normalizeProfile(profileDraft);
       templateSettings = cloneTemplateSettings(profileTemplateDraft);
       try { localStorage.setItem('templateSettings', JSON.stringify(templateSettings)); } catch(e) {}
-      if (profileEntryMode === 'onboarding') markOnboardingDone();
       showToast('画像已保存');
       showPage(dest || 'page-settings');
     }
@@ -2199,13 +2598,40 @@
         });
       });
       const renderBlockers = () => {
-        const riskHtml = mustConfirm.map(item => `<div class="rounded-md3-sm p-3 bg-md-error-container text-md-error"><div class="flex items-center gap-2"><span class="text-xs px-2 py-0.5 rounded-full bg-white/60">必须确认</span><span class="text-sm font-medium">${item.label}</span></div><p class="text-xs mt-1 opacity-90">${item.oneLine}</p></div>`).join('');
-        const uncertainVisible = shouldAdd.slice(0, 4).map(item => `<div class="rounded-md3-sm p-3 bg-md-warning-container text-md-warning"><div class="flex items-center gap-2"><span class="text-xs px-2 py-0.5 rounded-full bg-white/60">建议补充</span><span class="text-sm font-medium">${item.label}</span></div><p class="text-xs mt-1 opacity-90">${item.oneLine}</p></div>`).join('');
-        const uncertainMore = shouldAdd.length > 4 ? `<details class="text-xs text-md-on-surface-variant"><summary class="cursor-pointer text-md-primary font-medium">查看更多建议补充 (${shouldAdd.length - 4})</summary><div class="mt-2 space-y-2">${shouldAdd.slice(4).map(item => `<div class="rounded-md3-sm p-3 bg-md-warning-container text-md-warning"><span class="text-sm font-medium">${item.label}</span><p class="text-xs mt-1 opacity-90">${item.oneLine}</p></div>`).join('')}</div></details>` : '';
+        const renderActionCard = (item, tone, compact = false) => {
+          const advice = getSigningActionAdvice(item);
+          const toneClass = tone === 'risk' ? 'bg-md-error-container text-md-error' : 'bg-md-warning-container text-md-warning';
+          const tag = tone === 'risk' ? '必须确认' : '建议补充';
+          return `<div class="rounded-md3-sm p-3 ${toneClass}">
+            <div class="flex items-start gap-2">
+              <span class="text-xs px-2 py-0.5 rounded-full bg-white/60 shrink-0">${tag}</span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium">${item.label}</p>
+                <p class="text-xs mt-1 opacity-90">${item.oneLine}</p>
+              </div>
+            </div>
+            <div class="mt-3 space-y-2 text-xs">
+              <p><span class="font-bold">这样问：</span>${advice.ask}</p>
+              <p><span class="font-bold">写进合同：</span>${advice.clause}</p>
+              ${compact ? '' : `<p><span class="font-bold">需补材料：</span>${advice.material}</p><p><span class="font-bold">确认前别做：</span>${advice.avoid}</p>`}
+            </div>
+          </div>`;
+        };
+        const riskVisible = mustConfirm.slice(0, 2).map(item => renderActionCard(item, 'risk')).join('');
+        const riskMore = mustConfirm.length > 2 ? `<details class="text-xs text-md-on-surface-variant"><summary class="cursor-pointer text-md-primary font-medium">查看更多必须确认 (${mustConfirm.length - 2})</summary><div class="mt-2 space-y-2">${mustConfirm.slice(2).map(item => renderActionCard(item, 'risk', true)).join('')}</div></details>` : '';
+        const uncertainVisible = shouldAdd.slice(0, 2).map(item => renderActionCard(item, 'uncertain', true)).join('');
+        const uncertainMore = shouldAdd.length > 2 ? `<details class="text-xs text-md-on-surface-variant"><summary class="cursor-pointer text-md-primary font-medium">查看更多建议补充 (${shouldAdd.length - 2})</summary><div class="mt-2 space-y-2">${shouldAdd.slice(2).map(item => renderActionCard(item, 'uncertain', true)).join('')}</div></details>` : '';
         const laterHtml = laterItems.length ? `<div class="rounded-md3-sm p-3 bg-md-surface-variant text-md-on-surface-variant"><div class="flex items-center justify-between"><span class="text-xs px-2 py-0.5 rounded-full bg-md-surface">可稍后处理</span><span class="text-xs">${laterItems.length} 项</span></div><p class="text-xs mt-1">这些不是当前阻断项，可在确认关键风险后继续补齐。</p></div>` : '';
-        return riskHtml || uncertainVisible || laterHtml
-          ? `<div class="mt-3 space-y-2">${riskHtml}${uncertainVisible}${uncertainMore}${laterHtml}</div>`
-          : `<p class="text-xs text-md-on-surface-variant mt-2">当前没有明显阻断项，可以继续检查材料和条款。</p>`;
+        return riskVisible || uncertainVisible || laterHtml
+          ? `<div class="mt-3 space-y-2">
+              ${riskVisible}
+              ${riskMore}
+              ${uncertainVisible}
+              ${uncertainMore}
+              ${laterHtml}
+              <p class="text-[11px] text-md-on-surface-variant leading-relaxed">提示：以上是基于已记录信息生成的核查建议，签约前仍需以合同原文和实际材料为准。</p>
+            </div>`
+          : `<p class="text-xs text-md-on-surface-variant mt-2">基于已记录信息，当前没有明显阻断项；签约前仍需以合同原文和材料为准。</p>`;
       };
       document.getElementById('signing-overview-content').innerHTML = `
         <div class="px-4 py-2">
@@ -2695,11 +3121,12 @@
     let contextMenuActions = [];
     function showPropertyMenu(id) {
       contextMenuActions = [
-        ['编辑',()=>{ editPropertyId=id; showPage('page-add-property'); }],
-        ['删除',()=>deleteProperty(id)]
+        ['生成海报',()=>generatePoster(id)],
+        ['编辑房源',()=>{ editPropertyId=id; showPage('page-add-property'); }],
+        ['删除房源',()=>deleteProperty(id)]
       ];
       document.getElementById('context-menu-items').innerHTML = contextMenuActions.map(([label], i)=>
-        `<div class="p-3 rounded-md3-sm hover:bg-md-surface-variant cursor-pointer text-sm ${label==='删除'?'text-md-error':''}" onclick="hideContextMenu(); contextMenuActions[${i}][1]()">${label}</div>`
+        `<div class="p-3 rounded-md3-sm hover:bg-md-surface-variant cursor-pointer text-sm ${label==='删除房源'?'text-md-error':''}" onclick="hideContextMenu(); contextMenuActions[${i}][1]()">${label}</div>`
       ).join('') + `<div class="p-3 rounded-md3-sm hover:bg-md-surface-variant cursor-pointer text-sm" onclick="hideContextMenu()">取消</div>`;
       document.getElementById('context-menu').classList.add('show');
     }
@@ -2758,6 +3185,7 @@
             const data = JSON.parse(ev.target.result);
             if (!Array.isArray(data)) { showToast('文件格式不正确'); return; }
             properties = data;
+            sampleDataActive = false;
             showToast('已恢复 ' + data.length + ' 条房源记录');
             showPage('page-list');
           } catch(err) {
@@ -2769,47 +3197,119 @@
       input.click();
     }
 
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, ch => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[ch]));
+    }
+
+    function renderPosterHighlights(p) {
+      const s = p.scores || {};
+      const dims = [
+        ['交通', s.transport],
+        ['环境', s.environment],
+        ['户型', s.layout],
+        ['设施', s.facility],
+        ['风险控制', s.risk],
+        ['性价比', s.pricePerf]
+      ].map(([label, score]) => ({ label, score: Number(score) || 0 }));
+      return dims.sort((a, b) => b.score - a.score).slice(0, 3);
+    }
+
     function generatePoster(id) {
       const p = properties.find(x => x.id === id);
       if (!p) return;
-      const s = p.scores || {};
-      const dims = [['交通', s.transport], ['环境', s.environment], ['户型', s.layout], ['设施', s.facility], ['风险', s.risk], ['性价比', s.pricePerf]];
       const riskCount = getPropertyRiskCount(p);
-      const viewings = p.viewings.length;
-      const lastViewing = p.viewings[p.viewings.length - 1];
-      document.getElementById('poster-content').innerHTML = `
-        <div style="background:linear-gradient(135deg,#6750A4,#9A82DB);padding:32px 24px 24px;color:white;">
-          <p style="font-size:12px;opacity:0.8;margin:0;">看房助手 · 房源报告</p>
-          <h2 style="font-size:22px;font-weight:bold;margin:8px 0 4px;">${p.title}</h2>
-          <p style="font-size:13px;opacity:0.9;margin:0;">${p.address || ''}</p>
-          <div style="display:flex;align-items:baseline;gap:8px;margin-top:16px;">
-            <span style="font-size:28px;font-weight:bold;">¥${p.rent.toLocaleString()}</span>
-            <span style="font-size:14px;opacity:0.8;">/月 · ${p.deposit}</span>
+      const uncertainCount = getPropertyUncertainCount(p);
+      const lastViewing = (p.viewings || [])[p.viewings.length - 1];
+      const statusMap = {
+        draft:['待完善','#E7E0EC','#49454F'],
+        to_view:['待看房','#D3E3FD','#041E49'],
+        viewed:['已看房','#D3E3FD','#041E49'],
+        shortlisted:['候选','#C4F3A5','#1B3A10'],
+        signing:['签约中','#FFDEA6','#3E2E00'],
+        signed:['已签约','#C4F3A5','#1B3A10'],
+        rejected:['已排除','#F9DEDC','#410E0B'],
+        signing_abandoned:['已放弃','#E7E0EC','#49454F'],
+        archived:['已归档','#E7E0EC','#49454F']
+      };
+      const [statusLabel, statusBg, statusColor] = statusMap[p.status] || ['候选','#C4F3A5','#1B3A10'];
+      const highlights = renderPosterHighlights(p);
+      const riskSummary = riskCount > 0
+        ? `发现 ${riskCount} 个风险项，建议先复核`
+        : (uncertainCount > 0 ? `${uncertainCount} 个不确定项待确认` : '暂无明显风险');
+      const infoItems = [
+        ['月租', `¥${(p.rent || 0).toLocaleString()}`],
+        ['押付', p.deposit || '-'],
+        ['户型面积', `${p.layout || '-'} · ${p.area || '-'}m²`],
+        ['楼层朝向', `${p.floor || '-'} · ${p.orientation || '-'}`]
+      ];
+      const location = [p.community, p.district].filter(Boolean).join(' · ') || p.address || '房源位置待补充';
+      const generatedDate = new Date().toLocaleDateString('zh-CN');
+      const posterEl = document.getElementById('poster-content');
+      posterEl.innerHTML = `
+        <div style="width:360px;height:640px;max-width:calc(100vw - 32px);background:#F8F6F2;color:#1C1B1F;font-family:'Noto Sans SC',sans-serif;box-sizing:border-box;padding:22px;display:flex;flex-direction:column;gap:16px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+            <div style="font-size:12px;letter-spacing:0;color:#6750A4;font-weight:700;">看房助手</div>
+            <span style="font-size:12px;font-weight:700;background:${statusBg};color:${statusColor};padding:6px 10px;border-radius:999px;">${statusLabel}</span>
           </div>
-        </div>
-        <div style="background:white;padding:20px 24px;color:#1C1B1F;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-            <span style="font-size:14px;color:#49454F;">综合评分</span>
-            <span style="font-size:32px;font-weight:bold;color:#6750A4;">${p.score}</span>
+          <div>
+            <h2 style="font-size:28px;line-height:1.18;font-weight:800;margin:0;color:#1C1B1F;word-break:break-word;">${escapeHtml(p.title || '未命名房源')}</h2>
+            <p style="font-size:13px;line-height:1.45;color:#5F5B63;margin:8px 0 0;word-break:break-word;">${escapeHtml(location)}</p>
           </div>
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;">
-            ${dims.map(([label, score]) => `
-              <div style="text-align:center;">
-                <div style="font-size:18px;font-weight:bold;color:${score >= 80 ? '#6750A4' : score >= 60 ? '#7C5800' : '#B3261E'};">${score}</div>
-                <div style="font-size:11px;color:#49454F;">${label}</div>
+          <div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end;background:#FFFFFF;border-radius:22px;padding:18px;box-shadow:0 8px 24px rgba(37,31,43,0.08);">
+            <div>
+              <p style="font-size:12px;color:#79747E;margin:0 0 4px;">月租</p>
+              <div style="display:flex;align-items:baseline;gap:4px;">
+                <span style="font-size:34px;line-height:1;font-weight:800;color:#6750A4;">¥${(p.rent || 0).toLocaleString()}</span>
+                <span style="font-size:13px;color:#79747E;">/月</span>
+              </div>
+              <p style="font-size:12px;color:#5F5B63;margin:8px 0 0;">${escapeHtml(p.deposit || '押付待补充')}</p>
+            </div>
+            <div style="width:78px;height:78px;border-radius:20px;background:#F1ECF8;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+              <span style="font-size:12px;color:#6750A4;font-weight:700;">综合分</span>
+              <span style="font-size:30px;line-height:1;font-weight:800;color:#21005D;margin-top:4px;">${Math.round(p.score || 0)}</span>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            ${infoItems.map(([label, value]) => `
+              <div style="background:#FFFFFF;border-radius:16px;padding:11px 12px;min-height:58px;box-sizing:border-box;">
+                <p style="font-size:11px;color:#79747E;margin:0 0 5px;">${label}</p>
+                <p style="font-size:13px;line-height:1.25;color:#1C1B1F;font-weight:700;margin:0;word-break:break-word;">${escapeHtml(value)}</p>
               </div>
             `).join('')}
           </div>
-          <div style="border-top:1px solid #E7E0EC;padding-top:16px;display:flex;justify-content:space-between;font-size:13px;color:#49454F;">
-            <span>${p.floor} · ${p.orientation} · ${p.area}m² · ${p.layout}</span>
+          <div style="background:#FFFFFF;border-radius:20px;padding:16px;">
+            <p style="font-size:13px;font-weight:800;margin:0 0 12px;color:#1C1B1F;">3 个亮点</p>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+              ${highlights.map(item => `
+                <div style="background:#F8F6F2;border-radius:16px;padding:12px 8px;text-align:center;">
+                  <p style="font-size:22px;line-height:1;font-weight:800;color:${item.score >= 80 ? '#386A20' : item.score >= 60 ? '#7C5800' : '#B3261E'};margin:0;">${item.score}</p>
+                  <p style="font-size:11px;color:#5F5B63;margin:7px 0 0;">${escapeHtml(item.label)}</p>
+                </div>
+              `).join('')}
+            </div>
           </div>
-          <div style="display:flex;gap:16px;margin-top:12px;font-size:12px;">
-            <span>看房 ${viewings} 次</span>
-            ${riskCount > 0 ? `<span style="color:#B3261E;">风险项 ${riskCount}</span>` : '<span style="color:#386A20;">无风险项</span>'}
-            ${lastViewing ? `<span>最近: ${lastViewing.date}</span>` : ''}
+          <div style="display:flex;gap:10px;align-items:stretch;">
+            <div style="flex:1;background:${riskCount > 0 ? '#F9DEDC' : uncertainCount > 0 ? '#FFDEA6' : '#E7F4DA'};color:${riskCount > 0 ? '#410E0B' : uncertainCount > 0 ? '#3E2E00' : '#1B3A10'};border-radius:18px;padding:14px;">
+              <p style="font-size:11px;font-weight:800;margin:0 0 6px;">主要风险</p>
+              <p style="font-size:14px;line-height:1.35;font-weight:700;margin:0;">${escapeHtml(riskSummary)}</p>
+            </div>
+            <div style="width:92px;background:#FFFFFF;border-radius:18px;padding:14px;box-sizing:border-box;text-align:center;">
+              <p style="font-size:11px;color:#79747E;margin:0 0 8px;">风险/不确定</p>
+              <p style="font-size:22px;line-height:1;font-weight:800;color:#B3261E;margin:0;">${riskCount}</p>
+              <p style="font-size:12px;color:#7C5800;margin:6px 0 0;">${uncertainCount}</p>
+            </div>
           </div>
-          ${p.contact ? `<div style="margin-top:12px;font-size:12px;color:#49454F;">联系人: ${p.contact} ${p.phone}</div>` : ''}
-          <div style="margin-top:20px;text-align:center;font-size:11px;color:#79747E;">由「看房助手」生成 · ${new Date().toLocaleDateString()}</div>
+          ${lastViewing ? `<div style="font-size:12px;color:#5F5B63;background:#FFFFFF;border-radius:14px;padding:10px 12px;">最近看房：${escapeHtml(lastViewing.date || '')}</div>` : ''}
+          <div style="margin-top:auto;display:flex;justify-content:space-between;align-items:center;color:#79747E;font-size:11px;">
+            <span>由看房助手生成</span>
+            <span>${generatedDate}</span>
+          </div>
         </div>`;
       document.getElementById('poster-overlay').classList.add('show');
     }
@@ -2821,6 +3321,10 @@
     function downloadPoster() {
       const el = document.getElementById('poster-content');
       if (!el) return;
+      if (typeof html2canvas !== 'function') {
+        showToast('保存失败，请长按截图');
+        return;
+      }
       showToast('正在生成图片...');
       html2canvas(el, {scale: 2, useCORS: true}).then(canvas => {
         const link = document.createElement('a');
@@ -2974,11 +3478,13 @@
         const p = properties.find(x => x.id === editPropertyId);
         if (!p) { showToast('房源不存在'); showPage('page-list'); return; }
         Object.assign(p, data);
+        sampleDataActive = false;
         showToast('房源已更新');
         editPropertyId = null;
         showPage('page-property-detail');
       } else {
         properties.push({ id: Date.now(), ...data, status:'draft', score:0, scores:{transport:0,environment:0,layout:0,facility:0,risk:0,pricePerf:0}, viewings:[], signingChecklistResults:{}, signingMaterials:[] });
+        sampleDataActive = false;
         showToast('房源已保存');
         showPage('page-list');
       }
@@ -3578,6 +4084,7 @@
 
     // Initialize
     document.querySelectorAll('.collapse-content[style*="max-height:0"]').forEach(el => { el.style.maxHeight = '0px'; });
+    window.addEventListener('resize', () => { if (guideDemoMode) renderGuideOverlay(); });
     showPage(onboardingDone ? 'page-list' : 'page-onboarding');
   </script>
 

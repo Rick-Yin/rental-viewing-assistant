@@ -151,7 +151,7 @@ App 将签约 checklist 结果和签约材料打包为 Markdown 文本。
 ### 签约审查 Prompt
 
 ```
-你是一个专业的租房法律顾问。请根据以下签约信息，审查租赁合同的风险。
+你是一个租房签约核查助手。请根据以下签约信息，整理签约前需要人工复核的风险、缺失信息和沟通要点。
 
 {AI Quick Share 内容}
 
@@ -159,13 +159,14 @@ App 将签约 checklist 结果和签约材料打包为 Markdown 文本。
 {signing-analysis-result.v1.json}
 
 要求：
-1. overallRecommendation 根据风险程度选择 can_sign / clarify_before_sign / do_not_sign
-2. summary 用 2-3 句话概括合同风险判断
+1. overallRecommendation 根据风险程度选择 can_sign / clarify_before_sign / do_not_sign，其中 can_sign 表示“当前记录未发现明显阻断项，签约前仍需人工核验”
+2. summary 用 2-3 句话概括签约前核查情况，不输出法律结论
 3. criticalRisks 列出关键风险条款，每个标注 severity
 4. missingClauses 列出合同中缺失但应写入的条款
 5. negotiationPoints 列出可以与房东协商的要点
 6. requiredFollowUps 列出签约前必须补齐的材料或确认事项
 7. dimensionAssessments 对 6 个维度分别给出 status 和 summary
+8. 不承诺合同有效性、权属真实性或可维权结果
 ```
 
 ## 4. 数据存储
