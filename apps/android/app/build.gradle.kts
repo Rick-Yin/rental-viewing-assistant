@@ -43,6 +43,7 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":domain"))
     implementation(project(":data"))
+    implementation(project(":feature:common"))
     implementation(project(":feature:profile"))
     implementation(project(":feature:property"))
     implementation(project(":feature:viewing"))
