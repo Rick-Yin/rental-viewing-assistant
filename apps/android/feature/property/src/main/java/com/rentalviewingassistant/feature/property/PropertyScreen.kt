@@ -33,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.rentalviewingassistant.domain.model.AiAnalysisResult
 import com.rentalviewingassistant.domain.model.ChecklistResult
+import com.rentalviewingassistant.domain.model.ChecklistStage
 import com.rentalviewingassistant.domain.model.ComparisonEntry
 import com.rentalviewingassistant.domain.model.Property
 import com.rentalviewingassistant.domain.model.PropertyStatus
@@ -183,6 +184,7 @@ fun PropertyDetailScreen(
     onStartSigning: (String) -> Unit,
     onOpenCompare: () -> Unit,
     onOpenSigning: () -> Unit,
+    onOpenAiReview: (String) -> Unit,
     onBuildAiShare: (String) -> Unit,
     onBuildExport: (String) -> Unit,
 ) {
@@ -202,7 +204,9 @@ fun PropertyDetailScreen(
     val selected = comparisonEntries.any { it.propertyId == property.id && it.selected }
     val riskCount = checklistResults.count { it.propertyId == property.id && it.resultValue == ResultValue.RISK }
     val uncertainCount = checklistResults.count { it.propertyId == property.id && it.resultValue == ResultValue.UNCERTAIN }
-    val latestAi = aiResults.filter { it.propertyId == property.id }.maxByOrNull { it.updatedAt }
+    val latestAi = aiResults
+        .filter { it.propertyId == property.id && it.stage == ChecklistStage.VIEWING && it.signingSessionId == null }
+        .maxByOrNull { it.updatedAt }
     val propertySigningIsActive = activeSigningSession?.propertyId == property.id
     val anotherSigningIsActive = activeSigningSession != null && !propertySigningIsActive
 
@@ -346,6 +350,9 @@ fun PropertyDetailScreen(
                     if (latestAi.recommendation.isNotBlank()) {
                         Text("建议：${latestAi.recommendation}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
                     }
+                    OutlinedButton(onClick = { onOpenAiReview(property.id) }, modifier = Modifier.fillMaxWidth()) {
+                        Text("查看完整 AI 结果")
+                    }
                 }
             }
         }
@@ -373,7 +380,14 @@ fun PropertyDetailScreen(
                     OutlinedButton(onClick = onOpenCompare, modifier = Modifier.weight(1f)) { Text("进入对比") }
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    OutlinedButton(onClick = { onBuildAiShare(property.id) }, modifier = Modifier.weight(1f)) { Text("AI 分析") }
+                    OutlinedButton(
+                        onClick = {
+                            if (latestAi == null) onBuildAiShare(property.id) else onOpenAiReview(property.id)
+                        },
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Text(if (latestAi == null) "AI 分析" else "AI 结果")
+                    }
                     OutlinedButton(onClick = { onBuildExport(property.id) }, modifier = Modifier.weight(1f)) { Text("导出单房") }
                 }
             }

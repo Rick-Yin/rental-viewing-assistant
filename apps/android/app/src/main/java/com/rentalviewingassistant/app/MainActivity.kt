@@ -39,6 +39,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.rentalviewingassistant.app.ui.theme.RentalViewingAssistantTheme
 import com.rentalviewingassistant.domain.model.ChecklistStage
+import com.rentalviewingassistant.feature.common.AiReviewScreen
 import com.rentalviewingassistant.feature.compare.CompareScreen
 import com.rentalviewingassistant.feature.profile.ProfileScreen
 import com.rentalviewingassistant.feature.property.PropertyDetailScreen
@@ -245,6 +246,7 @@ private fun RentalNavHost(
                 onStartSigning = viewModel::startSigning,
                 onOpenCompare = { navController.go("compare") },
                 onOpenSigning = { navController.go("signing") },
+                onOpenAiReview = { id -> navController.navigate("ai/viewing/$id") },
                 onBuildAiShare = { propertyId -> viewModel.buildAiShare(ChecklistStage.VIEWING, propertyId) },
                 onBuildExport = viewModel::buildExport,
             )
@@ -296,6 +298,50 @@ private fun RentalNavHost(
                 onOpenItemDetail = { propertyId, ownerId, categoryCode, itemCode ->
                     navController.navigate("checklist/viewing/$propertyId/$ownerId/$categoryCode/$itemCode")
                 },
+            )
+        }
+        composable("ai/viewing/{propertyId}") { backStackEntry ->
+            val propertyId = backStackEntry.arguments?.getString("propertyId")
+            val property = state.properties.firstOrNull { it.id == propertyId }
+            val latestResult = state.aiAnalysisResults
+                .filter { it.propertyId == propertyId && it.stage == ChecklistStage.VIEWING && it.signingSessionId == null }
+                .maxByOrNull { it.updatedAt }
+            AiReviewScreen(
+                stage = ChecklistStage.VIEWING,
+                property = property,
+                result = latestResult,
+                scoreCard = state.scoreCards.filter { it.propertyId == propertyId }.maxByOrNull { it.updatedAt },
+                onBack = { navController.backOrProperties() },
+                onBuildAiShare = { propertyId?.let { viewModel.buildAiShare(ChecklistStage.VIEWING, it) } },
+                onOpenImportEntry = {
+                    propertyId?.let { viewModel.selectProperty(it) }
+                    navController.go("viewing")
+                },
+            )
+        }
+        composable("ai/signing/{propertyId}/{signingSessionId}") { backStackEntry ->
+            val propertyId = backStackEntry.arguments?.getString("propertyId")
+            val signingSessionId = backStackEntry.arguments?.getString("signingSessionId")
+            val property = state.properties.firstOrNull { it.id == propertyId }
+            val latestResult = state.aiAnalysisResults
+                .filter {
+                    it.propertyId == propertyId &&
+                        it.stage == ChecklistStage.SIGNING &&
+                        it.signingSessionId == signingSessionId
+                }
+                .maxByOrNull { it.updatedAt }
+            AiReviewScreen(
+                stage = ChecklistStage.SIGNING,
+                property = property,
+                result = latestResult,
+                scoreCard = state.scoreCards.filter { it.propertyId == propertyId }.maxByOrNull { it.updatedAt },
+                onBack = { navController.backOrProperties() },
+                onBuildAiShare = {
+                    if (propertyId != null && signingSessionId != null) {
+                        viewModel.buildAiShare(ChecklistStage.SIGNING, propertyId, signingSessionId)
+                    }
+                },
+                onOpenImportEntry = { navController.go("signing") },
             )
         }
         composable("checklist/viewing/{propertyId}/{ownerId}/{categoryCode}/{itemCode}") { backStackEntry ->
@@ -351,6 +397,7 @@ private fun RentalNavHost(
                 onImportAi = { propertyId, sessionId, raw ->
                     viewModel.importAiResult(ChecklistStage.SIGNING, propertyId, sessionId, raw)
                 },
+                onOpenAiReview = { propertyId, sessionId -> navController.navigate("ai/signing/$propertyId/$sessionId") },
             )
         }
         composable("profile") {

@@ -52,6 +52,7 @@ fun SigningScreen(
     onFinishSigning: (SigningSession, Boolean, String) -> Unit,
     onBuildAiShare: (String, String) -> Unit,
     onImportAi: (String, String, String) -> Unit,
+    onOpenAiReview: (String, String) -> Unit,
 ) {
     if (session == null || property == null) {
         Column(Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -95,6 +96,9 @@ fun SigningScreen(
                 Text("优先处理身份授权、付款押金、维修边界和口头承诺是否写入合同。", style = MaterialTheme.typography.bodySmall)
                 if (latestAi != null) {
                     Text("AI：${latestAi.recommendation} · ${latestAi.summary}", color = MaterialTheme.colorScheme.primary)
+                    OutlinedButton(onClick = { onOpenAiReview(property.id, session.id) }, modifier = Modifier.fillMaxWidth()) {
+                        Text("查看 AI 审查结果")
+                    }
                 }
             }
         }
@@ -118,6 +122,11 @@ fun SigningScreen(
                 Button(onClick = { onBuildAiShare(property.id, session.id) }) { Text("生成 Quick Share") }
                 OutlinedTextField(aiJson, { aiJson = it }, label = { Text("粘贴 AI JSON") }, modifier = Modifier.fillMaxWidth(), minLines = 3)
                 OutlinedButton(onClick = { onImportAi(property.id, session.id, aiJson) }) { Text("导入 AI 审查") }
+                if (latestAi != null) {
+                    OutlinedButton(onClick = { onOpenAiReview(property.id, session.id) }) {
+                        Text("打开 AI 结果页")
+                    }
+                }
             }
         }
         items(categories, key = { it.code }) { category ->
