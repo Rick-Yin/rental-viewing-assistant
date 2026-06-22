@@ -280,6 +280,7 @@ private fun RentalNavHost(
                     navController.go("viewing")
                 },
                 onToggleCandidate = viewModel::toggleCandidate,
+                onChangeStatus = viewModel::changePropertyStatus,
                 onStartSigning = viewModel::startSigning,
                 onOpenCompare = { navController.go("compare") },
                 onOpenSigning = { navController.go("signing") },

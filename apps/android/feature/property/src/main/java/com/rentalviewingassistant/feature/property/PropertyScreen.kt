@@ -568,6 +568,7 @@ fun PropertyDetailScreen(
     onEditProperty: (String) -> Unit,
     onOpenViewing: (String) -> Unit,
     onToggleCandidate: (String) -> Unit,
+    onChangeStatus: (String, PropertyStatus) -> Unit,
     onStartSigning: (String) -> Unit,
     onOpenCompare: () -> Unit,
     onOpenSigning: () -> Unit,
@@ -576,7 +577,13 @@ fun PropertyDetailScreen(
     onBuildExport: (String) -> Unit,
 ) {
     if (property == null) {
-        Column(Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .statusBarsPadding()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
             DetailHeader(title = "房源详情", property = null, onBack = onBack)
             PrototypeCard {
                 Text("房源不存在", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
@@ -589,8 +596,11 @@ fun PropertyDetailScreen(
     val propertyViewings = viewings.filter { it.propertyId == property.id }
     val score = scoreCards.latestFor(property.id)
     val selected = comparisonEntries.any { it.propertyId == property.id && it.selected }
-    val riskCount = checklistResults.count { it.propertyId == property.id && it.resultValue == ResultValue.RISK }
-    val uncertainCount = checklistResults.count { it.propertyId == property.id && it.resultValue == ResultValue.UNCERTAIN }
+    val propertyResults = checklistResults.filter { it.propertyId == property.id }
+    val viewingResults = propertyResults.filter { it.stage == ChecklistStage.VIEWING }
+    val riskCount = viewingResults.count { it.resultValue == ResultValue.RISK }
+    val uncertainCount = viewingResults.count { it.resultValue == ResultValue.UNCERTAIN }
+    val riskInsight = topRiskInsight(viewingResults, score, property)
     val latestAi = aiResults
         .filter { it.propertyId == property.id && it.stage == ChecklistStage.VIEWING && it.signingSessionId == null }
         .maxByOrNull { it.updatedAt }
@@ -598,88 +608,35 @@ fun PropertyDetailScreen(
     val anotherSigningIsActive = activeSigningSession != null && !propertySigningIsActive
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(14.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .statusBarsPadding()
+            .padding(horizontal = 16.dp),
+        contentPadding = PaddingValues(top = 14.dp, bottom = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item {
             DetailHeader(title = property.title, property = property, onBack = onBack)
         }
         item {
-            PrototypeCard(containerColor = MaterialTheme.colorScheme.surfaceVariant) {
-                Text(formatRent(property), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
-                Text(
-                    listOf(property.depositRule, property.agencyFee.takeIf { it.isNotBlank() }?.let { "中介费 $it" })
-                        .filterNotNull()
-                        .joinToString(" · ")
-                        .ifBlank { "押付规则待补充" },
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                Text(
-                    listOf(property.layoutText, property.areaSquareMeter?.let { "${it.toInt()}m²" }, property.floorInfo, property.orientation)
-                        .filter { it?.isNotBlank() == true }
-                        .joinToString(" · ")
-                        .ifBlank { "户型、面积、楼层和朝向待补充" },
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                Text(
-                    listOf(property.communityName, property.district, property.address)
-                        .filter { it.isNotBlank() }
-                        .joinToString(" · ")
-                        .ifBlank { "位置待补充" },
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.primary,
-                )
-                if (property.contactName.isNotBlank() || property.contactPhone.isNotBlank()) {
-                    Text("${property.contactName} ${property.contactPhone}".trim(), style = MaterialTheme.typography.bodySmall)
-                }
-                if (property.sourcePlatform.isNotBlank() || property.listingUrl.isNotBlank()) {
-                    Text(
-                        listOf(property.sourcePlatform, property.listingUrl).filter { it.isNotBlank() }.joinToString(" · "),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                }
-            }
+            DetailInfoPanel(property = property)
         }
         if (propertySigningIsActive || anotherSigningIsActive) {
             item {
-                PrototypeCard(containerColor = if (propertySigningIsActive) MaterialTheme.colorScheme.primaryContainer else PrototypeWarningContainer) {
-                    Text(
-                        if (propertySigningIsActive) "这套房正在签约中" else "已有其他房源签约中",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                    )
-                    Text(
-                        if (propertySigningIsActive) "继续核对签约 checklist、材料和 AI 审查结果。"
-                        else "MVP 约束同一时间只允许一个 signing，会阻止这套房直接进入签约。",
-                        style = MaterialTheme.typography.bodySmall,
-                    )
-                    if (propertySigningIsActive) {
-                        Button(onClick = onOpenSigning) { Text("进入签约总览") }
-                    }
-                }
+                DetailSigningBanner(
+                    propertySigningIsActive = propertySigningIsActive,
+                    onOpenSigning = onOpenSigning,
+                )
             }
         }
         item {
-            PrototypeCard {
-                Row(horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                    Text("综合评分", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                    Text(score?.totalScore?.toInt()?.toString() ?: "-", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
-                }
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    MetricTile("看房", "${propertyViewings.size}次", Modifier.weight(1f))
-                    MetricTile("风险", riskCount.toString(), Modifier.weight(1f))
-                    MetricTile("不确定", uncertainCount.toString(), Modifier.weight(1f))
-                }
-                ScoreRow("交通", score?.transportScore)
-                ScoreRow("环境", score?.environmentScore)
-                ScoreRow("户型", score?.layoutScore)
-                ScoreRow("设施", score?.facilityScore)
-                ScoreRow("风险", score?.riskScore)
-                ScoreRow("性价比", score?.pricePerformanceScore)
-            }
+            DetailScorePanel(
+                score = score,
+                viewingCount = propertyViewings.size,
+                riskCount = riskCount,
+                uncertainCount = uncertainCount,
+                riskInsight = riskInsight,
+            )
         }
         item {
             Row(horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
@@ -692,91 +649,344 @@ fun PropertyDetailScreen(
                 PrototypeCard {
                     Text("还没有看房记录", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                     Text("先创建一次看房记录，再填写 checklist、照片说明和评分。")
-                    Button(onClick = { onOpenViewing(property.id) }) { Text("开始看房") }
+                    Button(onClick = { onOpenViewing(property.id) }, modifier = Modifier.fillMaxWidth()) {
+                        Text("开始看房")
+                    }
                 }
             }
         } else {
             items(propertyViewings, key = { it.id }) { viewing ->
                 val viewingResults = checklistResults.filter { it.ownerId == viewing.id }
-                val viewingRisks = viewingResults.count { it.resultValue == ResultValue.RISK }
-                val viewingUncertain = viewingResults.count { it.resultValue == ResultValue.UNCERTAIN }
-                PrototypeCard {
-                    Text(
-                        listOf(viewing.visitedAt, viewing.scheduledAt).firstOrNull { it.isNotBlank() } ?: "未记录时间",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.Bold,
-                    )
-                    Text(
-                        viewing.firstImpression.ifBlank { viewing.notes.ifBlank { "现场印象待补充" } },
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        if (viewingRisks > 0) {
-                            PrototypeChip("风险 $viewingRisks", PrototypeErrorContainer, PrototypeError)
-                        }
-                        if (viewingUncertain > 0) {
-                            PrototypeChip("不确定 $viewingUncertain", PrototypeWarningContainer, PrototypeWarning)
-                        }
-                        if (viewingRisks == 0 && viewingUncertain == 0) {
-                            PrototypeChip("暂无阻断", MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.colorScheme.onSurfaceVariant)
-                        }
-                    }
-                    OutlinedButton(onClick = { onOpenViewing(property.id) }, modifier = Modifier.fillMaxWidth()) {
-                        Text("打开看房 checklist")
-                    }
-                }
-            }
-        }
-        if (latestAi != null) {
-            item {
-                PrototypeCard(containerColor = MaterialTheme.colorScheme.primaryContainer) {
-                    Text("AI 结果", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                    Text(latestAi.summary.ifBlank { "AI 已导入，但没有摘要字段。" }, style = MaterialTheme.typography.bodySmall)
-                    if (latestAi.recommendation.isNotBlank()) {
-                        Text("建议：${latestAi.recommendation}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
-                    }
-                    OutlinedButton(onClick = { onOpenAiReview(property.id) }, modifier = Modifier.fillMaxWidth()) {
-                        Text("查看完整 AI 结果")
-                    }
-                }
+                DetailViewingCard(
+                    viewing = viewing,
+                    results = viewingResults,
+                    onOpenViewing = { onOpenViewing(property.id) },
+                )
             }
         }
         item {
-            PrototypeCard {
-                Text("下一步动作", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                if (property.status == PropertyStatus.SIGNING) {
-                    Button(onClick = onOpenSigning, modifier = Modifier.fillMaxWidth()) { Text("进入签约总览") }
-                } else {
-                    Button(onClick = { onStartSigning(property.id) }, modifier = Modifier.fillMaxWidth()) { Text("进入签约核查") }
-                }
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    OutlinedButton(onClick = { onToggleCandidate(property.id) }, modifier = Modifier.weight(1f)) {
-                        Text(if (selected) "隐藏候选" else "加入候选")
-                    }
-                    OutlinedButton(onClick = { onOpenViewing(property.id) }, modifier = Modifier.weight(1f)) {
-                        Text("看房 checklist")
-                    }
-                }
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    OutlinedButton(onClick = { onEditProperty(property.id) }, modifier = Modifier.weight(1f)) {
-                        Icon(Icons.Outlined.Edit, contentDescription = null)
-                        Text("编辑")
-                    }
-                    OutlinedButton(onClick = onOpenCompare, modifier = Modifier.weight(1f)) { Text("进入对比") }
-                }
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    OutlinedButton(
-                        onClick = {
-                            if (latestAi == null) onBuildAiShare(property.id) else onOpenAiReview(property.id)
-                        },
-                        modifier = Modifier.weight(1f),
+            OutlinedButton(onClick = { onOpenViewing(property.id) }, modifier = Modifier.fillMaxWidth()) {
+                Text("+ 新建看房记录")
+            }
+        }
+        item {
+            DetailActionsPanel(
+                property = property,
+                selected = selected,
+                latestAi = latestAi,
+                anotherSigningIsActive = anotherSigningIsActive,
+                onOpenSigning = onOpenSigning,
+                onStartSigning = { onStartSigning(property.id) },
+                onToggleCandidate = { onToggleCandidate(property.id) },
+                onChangeStatus = { status -> onChangeStatus(property.id, status) },
+                onEditProperty = { onEditProperty(property.id) },
+                onOpenViewing = { onOpenViewing(property.id) },
+                onOpenCompare = onOpenCompare,
+                onOpenAiReview = { onOpenAiReview(property.id) },
+                onBuildAiShare = { onBuildAiShare(property.id) },
+                onBuildExport = { onBuildExport(property.id) },
+            )
+        }
+    }
+}
+
+@Composable
+private fun DetailInfoPanel(property: Property) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        shape = RoundedCornerShape(12.dp),
+    ) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.Bottom) {
+                Text(
+                    formatRent(property),
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+                Text(
+                    "/月 · ${property.depositRule.ifBlank { "押付待补充" }}${property.agencyFee.takeIf { it.isNotBlank() }?.let { " · 中介费 $it" } ?: ""}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(bottom = 4.dp),
+                )
+            }
+            Text(
+                listOf(property.layoutText, property.areaSquareMeter?.let { "${it.toInt()}m²" }, property.floorInfo, property.orientation)
+                    .filter { it?.isNotBlank() == true }
+                    .joinToString(" · ")
+                    .ifBlank { "户型、面积、楼层和朝向待补充" },
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                listOf(property.communityName, property.district, property.address)
+                    .filter { it.isNotBlank() }
+                    .joinToString(" · ")
+                    .ifBlank { "位置待补充" },
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.primary,
+            )
+            if (property.contactName.isNotBlank() || property.contactPhone.isNotBlank()) {
+                Text(
+                    "${property.contactName} ${property.contactPhone}".trim(),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            if (property.sourcePlatform.isNotBlank() || property.listingUrl.isNotBlank()) {
+                Text(
+                    listOf(property.sourcePlatform, property.listingUrl).filter { it.isNotBlank() }.joinToString(" · "),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.primary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun DetailSigningBanner(
+    propertySigningIsActive: Boolean,
+    onOpenSigning: () -> Unit,
+) {
+    PrototypeCard(
+        containerColor = if (propertySigningIsActive) MaterialTheme.colorScheme.primaryContainer else PrototypeWarningContainer,
+    ) {
+        Text(
+            if (propertySigningIsActive) "这套房正在签约中" else "已有其他房源签约中",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+        )
+        Text(
+            if (propertySigningIsActive) {
+                "继续核对签约 checklist、材料和 AI 审查结果。"
+            } else {
+                "MVP 约束同一时间只允许一个 signing，会阻止这套房直接进入签约。"
+            },
+            style = MaterialTheme.typography.bodySmall,
+        )
+        if (propertySigningIsActive) {
+            Button(onClick = onOpenSigning, modifier = Modifier.fillMaxWidth()) {
+                Text("进入签约总览")
+            }
+        }
+    }
+}
+
+@Composable
+private fun DetailScorePanel(
+    score: ScoreCard?,
+    viewingCount: Int,
+    riskCount: Int,
+    uncertainCount: Int,
+    riskInsight: RiskInsight,
+) {
+    PrototypeCard {
+        Row(horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Text("综合评分", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Text(
+                score?.totalScore?.toInt()?.toString() ?: "-",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary,
+            )
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            MetricTile("看房", "${viewingCount}次", Modifier.weight(1f))
+            MetricTile("风险", riskCount.toString(), Modifier.weight(1f))
+            MetricTile("不确定", uncertainCount.toString(), Modifier.weight(1f))
+        }
+        val (riskContainer, riskContent) = riskInsight.colors()
+        Surface(color = riskContainer, contentColor = riskContent, shape = RoundedCornerShape(8.dp)) {
+            Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(riskInsight.label, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
+                Text(riskInsight.detail, style = MaterialTheme.typography.labelSmall)
+            }
+        }
+        ScoreRow("交通", score?.transportScore)
+        ScoreRow("环境", score?.environmentScore)
+        ScoreRow("户型", score?.layoutScore)
+        ScoreRow("设施", score?.facilityScore)
+        ScoreRow("风险", score?.riskScore)
+        ScoreRow("性价比", score?.pricePerformanceScore)
+    }
+}
+
+@Composable
+private fun DetailViewingCard(
+    viewing: Viewing,
+    results: List<ChecklistResult>,
+    onOpenViewing: () -> Unit,
+) {
+    val viewingRisks = results.count { it.resultValue == ResultValue.RISK }
+    val viewingUncertain = results.count { it.resultValue == ResultValue.UNCERTAIN }
+    PrototypeCard(modifier = Modifier.clickable(onClick = onOpenViewing)) {
+        Text(
+            listOf(viewing.visitedAt, viewing.scheduledAt).firstOrNull { it.isNotBlank() }?.take(16) ?: "未记录时间",
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.primary,
+            fontWeight = FontWeight.Bold,
+        )
+        Text(
+            listOf(
+                viewing.noiseLevel.takeIf { it.isNotBlank() }?.let { "噪音: $it" },
+                viewing.odorLevel.takeIf { it.isNotBlank() }?.let { "异味: $it" },
+                viewing.lightingLevel.takeIf { it.isNotBlank() }?.let { "采光: $it" },
+                viewing.ventilationLevel.takeIf { it.isNotBlank() }?.let { "通风: $it" },
+                viewing.cleanlinessLevel.takeIf { it.isNotBlank() }?.let { "清洁: $it" },
+                viewing.agentAttitude.takeIf { it.isNotBlank() }?.let { "中介: $it" },
+            ).filterNotNull().joinToString("  ").ifBlank { "现场环境待补充" },
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        if (viewing.transportSummary.isNotBlank()) {
+            Text(viewing.transportSummary, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        Text(
+            viewing.firstImpression.ifBlank { viewing.notes.ifBlank { "现场印象待补充" } },
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+        )
+        if (viewing.riskSummary.isNotBlank()) {
+            Text(
+                viewing.riskSummary,
+                style = MaterialTheme.typography.labelSmall,
+                color = PrototypeError,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            if (viewingRisks > 0) {
+                PrototypeChip("风险: $viewingRisks", PrototypeErrorContainer, PrototypeError)
+            }
+            if (viewingUncertain > 0) {
+                PrototypeChip("不确定: $viewingUncertain", PrototypeWarningContainer, PrototypeWarning)
+            }
+            if (viewingRisks == 0 && viewingUncertain == 0) {
+                PrototypeChip("暂无阻断", MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        }
+    }
+}
+
+@Composable
+private fun DetailActionsPanel(
+    property: Property,
+    selected: Boolean,
+    latestAi: AiAnalysisResult?,
+    anotherSigningIsActive: Boolean,
+    onOpenSigning: () -> Unit,
+    onStartSigning: () -> Unit,
+    onToggleCandidate: () -> Unit,
+    onChangeStatus: (PropertyStatus) -> Unit,
+    onEditProperty: () -> Unit,
+    onOpenViewing: () -> Unit,
+    onOpenCompare: () -> Unit,
+    onOpenAiReview: () -> Unit,
+    onBuildAiShare: () -> Unit,
+    onBuildExport: () -> Unit,
+) {
+    PrototypeCard {
+        Text("下一步动作", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        when (property.status) {
+            PropertyStatus.DRAFT, PropertyStatus.TO_VIEW -> {
+                Button(onClick = onOpenViewing, modifier = Modifier.fillMaxWidth()) { Text("记录首次看房") }
+            }
+            PropertyStatus.VIEWED -> {
+                Button(onClick = { onChangeStatus(PropertyStatus.SHORTLISTED) }, modifier = Modifier.fillMaxWidth()) { Text("进入候选") }
+            }
+            PropertyStatus.SHORTLISTED -> {
+                if (anotherSigningIsActive) {
+                    Surface(
+                        modifier = Modifier.fillMaxWidth(),
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        shape = RoundedCornerShape(999.dp),
                     ) {
-                        Text(if (latestAi == null) "AI 分析" else "AI 结果")
+                        Text(
+                            "进入签约（已有房源签约中）",
+                            modifier = Modifier.padding(vertical = 12.dp),
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                        )
                     }
-                    OutlinedButton(onClick = { onBuildExport(property.id) }, modifier = Modifier.weight(1f)) { Text("导出单房") }
+                } else {
+                    Button(onClick = onStartSigning, modifier = Modifier.fillMaxWidth()) { Text("进入签约") }
                 }
+            }
+            PropertyStatus.SIGNING -> {
+                Button(onClick = onOpenSigning, modifier = Modifier.fillMaxWidth()) { Text("进入签约总览") }
+                OutlinedButton(onClick = { onChangeStatus(PropertyStatus.SHORTLISTED) }, modifier = Modifier.fillMaxWidth()) { Text("退回候选") }
+            }
+            PropertyStatus.REJECTED -> {
+                Button(onClick = { onChangeStatus(PropertyStatus.SHORTLISTED) }, modifier = Modifier.fillMaxWidth()) { Text("恢复候选") }
+            }
+            PropertyStatus.SIGNING_ABANDONED -> {
+                OutlinedButton(onClick = { onChangeStatus(PropertyStatus.SIGNING) }, modifier = Modifier.fillMaxWidth()) { Text("恢复签约") }
+            }
+            PropertyStatus.ARCHIVED -> {
+                Button(onClick = { onChangeStatus(PropertyStatus.REJECTED) }, modifier = Modifier.fillMaxWidth()) { Text("取消归档") }
+            }
+            PropertyStatus.SIGNED -> {
+                OutlinedButton(onClick = { onChangeStatus(PropertyStatus.SIGNING) }, modifier = Modifier.fillMaxWidth()) { Text("退回签约中") }
+            }
+        }
+
+        if (latestAi != null) {
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                shape = RoundedCornerShape(8.dp),
+            ) {
+                Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text("AI 结果", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
+                    Text(latestAi.summary.ifBlank { "AI 已导入，但没有摘要字段。" }, style = MaterialTheme.typography.labelSmall)
+                    if (latestAi.recommendation.isNotBlank()) {
+                        Text("建议：${latestAi.recommendation}", style = MaterialTheme.typography.labelSmall)
+                    }
+                }
+            }
+        }
+
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedButton(onClick = onEditProperty, modifier = Modifier.weight(1f)) {
+                Icon(Icons.Outlined.Edit, contentDescription = null)
+                Text("编辑")
+            }
+            OutlinedButton(
+                onClick = { if (latestAi == null) onBuildAiShare() else onOpenAiReview() },
+                modifier = Modifier.weight(1f),
+            ) {
+                Text(if (latestAi == null) "AI 分析" else "查看 AI")
+            }
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedButton(onClick = onOpenCompare, modifier = Modifier.weight(1f)) { Text("进入对比板") }
+            OutlinedButton(onClick = onOpenViewing, modifier = Modifier.weight(1f)) { Text("照片与备注") }
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedButton(onClick = onToggleCandidate, modifier = Modifier.weight(1f)) {
+                Text(if (selected) "隐藏候选" else "加入候选")
+            }
+            OutlinedButton(onClick = onBuildExport, modifier = Modifier.weight(1f)) { Text("导出单房") }
+        }
+        if (property.status !in listOf(PropertyStatus.REJECTED, PropertyStatus.SIGNED, PropertyStatus.SIGNING_ABANDONED, PropertyStatus.ARCHIVED)) {
+            OutlinedButton(onClick = { onChangeStatus(PropertyStatus.REJECTED) }, modifier = Modifier.fillMaxWidth()) {
+                Text("排除", color = PrototypeError)
+            }
+        }
+        if (property.status == PropertyStatus.REJECTED || property.status == PropertyStatus.SIGNING_ABANDONED) {
+            OutlinedButton(onClick = { onChangeStatus(PropertyStatus.ARCHIVED) }, modifier = Modifier.fillMaxWidth()) {
+                Text("归档")
             }
         }
     }

@@ -310,6 +310,58 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun changePropertyStatus(propertyId: String, status: PropertyStatus) = viewModelScope.launch {
+        if (status == PropertyStatus.SIGNING) {
+            startSigning(propertyId)
+            return@launch
+        }
+        val state = uiState.value.rentalState
+        val property = state.properties.firstOrNull { it.id == propertyId } ?: return@launch
+        val now = Time.nowIso()
+        val workflowStage = when (status) {
+            PropertyStatus.SIGNED -> WorkflowStage.SIGNED
+            PropertyStatus.SIGNING_ABANDONED -> WorkflowStage.SIGNING_ABANDONED
+            else -> WorkflowStage.VIEWING
+        }
+        val updated = property.copy(
+            status = status,
+            workflowStage = workflowStage,
+            rejectionReason = if (status == PropertyStatus.REJECTED && property.rejectionReason.isBlank()) {
+                "从详情页排除"
+            } else {
+                property.rejectionReason
+            },
+            updatedAt = now,
+        )
+        rentalRepository.upsertProperty(updated)
+        if (status == PropertyStatus.SHORTLISTED) {
+            val entry = state.comparisonEntries.firstOrNull { it.propertyId == propertyId }
+            rentalRepository.upsertComparisonEntry(
+                entry?.copy(selected = true, updatedAt = now) ?: ComparisonEntry(
+                    id = Ids.newId("compare"),
+                    propertyId = propertyId,
+                    selected = true,
+                    createdAt = now,
+                    updatedAt = now,
+                ),
+            )
+        }
+        if (property.status == PropertyStatus.SIGNING && status != PropertyStatus.SIGNING) {
+            state.signingSessions.firstOrNull {
+                it.propertyId == propertyId && it.status == PropertyStatus.SIGNING
+            }?.let { session ->
+                rentalRepository.upsertSigningSession(session.copy(status = status, decidedAt = now, updatedAt = now))
+            }
+        }
+        message.value = when (status) {
+            PropertyStatus.SHORTLISTED -> "已进入候选"
+            PropertyStatus.REJECTED -> "已排除房源"
+            PropertyStatus.ARCHIVED -> "已归档房源"
+            PropertyStatus.VIEWED -> "已退回已看房"
+            else -> "房源状态已更新"
+        }
+    }
+
     fun startSigning(propertyId: String) = viewModelScope.launch {
         val state = uiState.value.rentalState
         val property = state.properties.firstOrNull { it.id == propertyId } ?: return@launch
