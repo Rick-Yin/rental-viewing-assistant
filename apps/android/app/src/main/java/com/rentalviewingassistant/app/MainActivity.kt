@@ -45,6 +45,7 @@ import com.rentalviewingassistant.feature.property.PropertyDetailScreen
 import com.rentalviewingassistant.feature.property.PropertyEditorScreen
 import com.rentalviewingassistant.feature.property.PropertyScreen
 import com.rentalviewingassistant.feature.signing.SigningScreen
+import com.rentalviewingassistant.feature.viewing.ChecklistItemDetailScreen
 import com.rentalviewingassistant.feature.viewing.ViewingScreen
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -292,6 +293,27 @@ private fun RentalNavHost(
                 onAddMediaNote = viewModel::addMediaNote,
                 onBuildAiShare = { propertyId -> viewModel.buildAiShare(ChecklistStage.VIEWING, propertyId) },
                 onImportAi = { propertyId, raw -> viewModel.importAiResult(ChecklistStage.VIEWING, propertyId, null, raw) },
+                onOpenItemDetail = { propertyId, ownerId, categoryCode, itemCode ->
+                    navController.navigate("checklist/viewing/$propertyId/$ownerId/$categoryCode/$itemCode")
+                },
+            )
+        }
+        composable("checklist/viewing/{propertyId}/{ownerId}/{categoryCode}/{itemCode}") { backStackEntry ->
+            val propertyId = backStackEntry.arguments?.getString("propertyId")
+            val ownerId = backStackEntry.arguments?.getString("ownerId")
+            val categoryCode = backStackEntry.arguments?.getString("categoryCode")
+            val itemCode = backStackEntry.arguments?.getString("itemCode")
+            ChecklistItemDetailScreen(
+                stage = ChecklistStage.VIEWING,
+                property = state.properties.firstOrNull { it.id == propertyId },
+                ownerId = ownerId,
+                categoryCode = categoryCode,
+                itemCode = itemCode,
+                checklist = uiState.viewingChecklist,
+                selection = state.templateSelection,
+                results = state.checklistResults,
+                onBack = { navController.backOrProperties() },
+                onUpdateChecklist = viewModel::updateChecklistResult,
             )
         }
         composable("compare") {
