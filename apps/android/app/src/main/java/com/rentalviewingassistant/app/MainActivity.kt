@@ -362,6 +362,24 @@ private fun RentalNavHost(
                 onUpdateChecklist = viewModel::updateChecklistResult,
             )
         }
+        composable("checklist/signing/{propertyId}/{ownerId}/{categoryCode}/{itemCode}") { backStackEntry ->
+            val propertyId = backStackEntry.arguments?.getString("propertyId")
+            val ownerId = backStackEntry.arguments?.getString("ownerId")
+            val categoryCode = backStackEntry.arguments?.getString("categoryCode")
+            val itemCode = backStackEntry.arguments?.getString("itemCode")
+            ChecklistItemDetailScreen(
+                stage = ChecklistStage.SIGNING,
+                property = state.properties.firstOrNull { it.id == propertyId },
+                ownerId = ownerId,
+                categoryCode = categoryCode,
+                itemCode = itemCode,
+                checklist = uiState.signingChecklist,
+                selection = state.templateSelection,
+                results = state.checklistResults,
+                onBack = { navController.backOrProperties() },
+                onUpdateChecklist = viewModel::updateChecklistResult,
+            )
+        }
         composable("compare") {
             CompareScreen(
                 properties = state.properties,
@@ -398,6 +416,9 @@ private fun RentalNavHost(
                     viewModel.importAiResult(ChecklistStage.SIGNING, propertyId, sessionId, raw)
                 },
                 onOpenAiReview = { propertyId, sessionId -> navController.navigate("ai/signing/$propertyId/$sessionId") },
+                onOpenItemDetail = { propertyId, ownerId, categoryCode, itemCode ->
+                    navController.navigate("checklist/signing/$propertyId/$ownerId/$categoryCode/$itemCode")
+                },
             )
         }
         composable("profile") {

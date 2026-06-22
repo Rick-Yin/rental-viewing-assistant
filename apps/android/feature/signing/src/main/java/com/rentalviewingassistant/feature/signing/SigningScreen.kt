@@ -13,6 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -53,6 +54,7 @@ fun SigningScreen(
     onBuildAiShare: (String, String) -> Unit,
     onImportAi: (String, String, String) -> Unit,
     onOpenAiReview: (String, String) -> Unit,
+    onOpenItemDetail: (propertyId: String, ownerId: String, categoryCode: String, itemCode: String) -> Unit,
 ) {
     if (session == null || property == null) {
         Column(Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -149,6 +151,12 @@ fun SigningScreen(
                                 Text(item.oneLine, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             }
                             ResultChip(existing?.resultValue ?: ResultValue.UNCHECKED)
+                        }
+                        TextButton(
+                            onClick = { onOpenItemDetail(property.id, session.id, category.code, item.code) },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text("查看检查方法和风险信号")
                         }
                         OutlinedTextField(comment, { comment = it }, label = { Text("备注") }, modifier = Modifier.fillMaxWidth())
                         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
