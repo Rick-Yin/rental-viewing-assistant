@@ -150,23 +150,74 @@ class MainViewModel @Inject constructor(
         address: String,
         rentAmount: String,
         layoutText: String,
+    ) = saveProperty(
+        propertyId = null,
+        title = title,
+        communityName = communityName,
+        address = address,
+        district = "",
+        rentAmount = rentAmount,
+        depositRule = "押一付一",
+        agencyFee = "",
+        layoutText = layoutText,
+        areaSquareMeter = "",
+        floorInfo = "",
+        orientation = "",
+        contactName = "",
+        contactPhone = "",
+        sourcePlatform = "",
+        listingUrl = "",
+    )
+
+    fun saveProperty(
+        propertyId: String?,
+        title: String,
+        communityName: String,
+        address: String,
+        district: String,
+        rentAmount: String,
+        depositRule: String,
+        agencyFee: String,
+        layoutText: String,
+        areaSquareMeter: String,
+        floorInfo: String,
+        orientation: String,
+        contactName: String,
+        contactPhone: String,
+        sourcePlatform: String,
+        listingUrl: String,
     ) = viewModelScope.launch {
         val now = Time.nowIso()
+        val existing = propertyId?.let { id ->
+            uiState.value.rentalState.properties.firstOrNull { it.id == id }
+        }
         val property = Property(
-            id = Ids.newId("property"),
+            id = existing?.id ?: Ids.newId("property"),
             title = title.ifBlank { communityName.ifBlank { "未命名房源" } },
             communityName = communityName,
             address = address,
+            district = district,
             rentAmount = rentAmount.toIntOrNull(),
-            depositRule = "押一付一",
+            depositRule = depositRule.ifBlank { "押一付一" },
+            agencyFee = agencyFee,
             layoutText = layoutText,
-            status = PropertyStatus.TO_VIEW,
-            createdAt = now,
+            areaSquareMeter = areaSquareMeter.toDoubleOrNull(),
+            floorInfo = floorInfo,
+            orientation = orientation,
+            contactName = contactName,
+            contactPhone = contactPhone,
+            sourcePlatform = sourcePlatform,
+            listingUrl = listingUrl,
+            status = existing?.status ?: PropertyStatus.TO_VIEW,
+            workflowStage = existing?.workflowStage ?: WorkflowStage.VIEWING,
+            selectedForSigningAt = existing?.selectedForSigningAt,
+            rejectionReason = existing?.rejectionReason.orEmpty(),
+            createdAt = existing?.createdAt ?: now,
             updatedAt = now,
         )
         rentalRepository.upsertProperty(property)
         selectedPropertyId.value = property.id
-        message.value = "房源已创建"
+        message.value = if (existing == null) "房源已创建" else "房源已保存"
     }
 
     fun createViewing(propertyId: String, impression: String) = viewModelScope.launch {

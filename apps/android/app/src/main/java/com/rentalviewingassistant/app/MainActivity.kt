@@ -41,6 +41,8 @@ import com.rentalviewingassistant.app.ui.theme.RentalViewingAssistantTheme
 import com.rentalviewingassistant.domain.model.ChecklistStage
 import com.rentalviewingassistant.feature.compare.CompareScreen
 import com.rentalviewingassistant.feature.profile.ProfileScreen
+import com.rentalviewingassistant.feature.property.PropertyDetailScreen
+import com.rentalviewingassistant.feature.property.PropertyEditorScreen
 import com.rentalviewingassistant.feature.property.PropertyScreen
 import com.rentalviewingassistant.feature.signing.SigningScreen
 import com.rentalviewingassistant.feature.viewing.ViewingScreen
@@ -80,31 +82,36 @@ private fun RentalViewingAssistantApp(
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val route = backStackEntry?.destination?.route ?: "properties"
+    val showAppChrome = route in chromeRoutes
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Column {
-                        Text("看房助手", fontWeight = FontWeight.Bold)
-                        Text(
-                            text = "本地优先 · Android MVP",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                },
-            )
+            if (showAppChrome) {
+                TopAppBar(
+                    title = {
+                        Column {
+                            Text("看房助手", fontWeight = FontWeight.Bold)
+                            Text(
+                                text = "本地优先 · Android MVP",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    },
+                )
+            }
         },
         bottomBar = {
-            NavigationBar {
-                destinations.forEach { destination ->
-                    NavigationBarItem(
-                        selected = route == destination.route,
-                        onClick = { navController.go(destination.route) },
-                        icon = { Icon(destination.icon, contentDescription = destination.label) },
-                        label = { Text(destination.label) },
-                    )
+            if (showAppChrome) {
+                NavigationBar {
+                    destinations.forEach { destination ->
+                        NavigationBarItem(
+                            selected = destination.isSelected(route),
+                            onClick = { navController.go(destination.route) },
+                            icon = { Icon(destination.icon, contentDescription = destination.label) },
+                            label = { Text(destination.label) },
+                        )
+                    }
                 }
             }
         },
@@ -174,13 +181,102 @@ private fun RentalNavHost(
                 scoreCards = state.scoreCards,
                 comparisonEntries = state.comparisonEntries,
                 activeSigningSession = uiState.activeSigningSession,
-                onCreateProperty = viewModel::createProperty,
+                onOpenCreateProperty = { navController.navigate("property/new") },
+                onOpenPropertyDetail = { propertyId ->
+                    viewModel.selectProperty(propertyId)
+                    navController.navigate("property/$propertyId")
+                },
                 onOpenViewing = { propertyId ->
                     viewModel.selectProperty(propertyId)
                     navController.go("viewing")
                 },
                 onToggleCandidate = viewModel::toggleCandidate,
                 onBuildExport = viewModel::buildExport,
+            )
+        }
+        composable("property/new") {
+            PropertyEditorScreen(
+                property = null,
+                onBack = { navController.backOrProperties() },
+                onSave = { propertyId, title, communityName, address, district, rentAmount, depositRule, agencyFee,
+                        layoutText, areaSquareMeter, floorInfo, orientation, contactName, contactPhone, sourcePlatform,
+                        listingUrl ->
+                    viewModel.saveProperty(
+                        propertyId,
+                        title,
+                        communityName,
+                        address,
+                        district,
+                        rentAmount,
+                        depositRule,
+                        agencyFee,
+                        layoutText,
+                        areaSquareMeter,
+                        floorInfo,
+                        orientation,
+                        contactName,
+                        contactPhone,
+                        sourcePlatform,
+                        listingUrl,
+                    )
+                    navController.backOrProperties()
+                },
+            )
+        }
+        composable("property/{propertyId}") { backStackEntry ->
+            val propertyId = backStackEntry.arguments?.getString("propertyId")
+            val property = state.properties.firstOrNull { it.id == propertyId }
+            PropertyDetailScreen(
+                property = property,
+                viewings = state.viewings,
+                scoreCards = state.scoreCards,
+                comparisonEntries = state.comparisonEntries,
+                checklistResults = state.checklistResults,
+                aiResults = state.aiAnalysisResults,
+                activeSigningSession = uiState.activeSigningSession,
+                onBack = { navController.backOrProperties() },
+                onEditProperty = { id -> navController.navigate("property/$id/edit") },
+                onOpenViewing = { id ->
+                    viewModel.selectProperty(id)
+                    navController.go("viewing")
+                },
+                onToggleCandidate = viewModel::toggleCandidate,
+                onStartSigning = viewModel::startSigning,
+                onOpenCompare = { navController.go("compare") },
+                onOpenSigning = { navController.go("signing") },
+                onBuildAiShare = { propertyId -> viewModel.buildAiShare(ChecklistStage.VIEWING, propertyId) },
+                onBuildExport = viewModel::buildExport,
+            )
+        }
+        composable("property/{propertyId}/edit") { backStackEntry ->
+            val propertyId = backStackEntry.arguments?.getString("propertyId")
+            val property = state.properties.firstOrNull { it.id == propertyId }
+            PropertyEditorScreen(
+                property = property,
+                onBack = { navController.backOrProperties() },
+                onSave = { savedPropertyId, title, communityName, address, district, rentAmount, depositRule, agencyFee,
+                        layoutText, areaSquareMeter, floorInfo, orientation, contactName, contactPhone, sourcePlatform,
+                        listingUrl ->
+                    viewModel.saveProperty(
+                        savedPropertyId,
+                        title,
+                        communityName,
+                        address,
+                        district,
+                        rentAmount,
+                        depositRule,
+                        agencyFee,
+                        layoutText,
+                        areaSquareMeter,
+                        floorInfo,
+                        orientation,
+                        contactName,
+                        contactPhone,
+                        sourcePlatform,
+                        listingUrl,
+                    )
+                    navController.backOrProperties()
+                },
             )
         }
         composable("viewing") {
@@ -255,5 +351,16 @@ private fun NavHostController.go(route: String) {
         popUpTo(graph.startDestinationId) {
             saveState = true
         }
+    }
+}
+
+private val chromeRoutes = setOf("properties", "viewing", "compare", "signing", "profile")
+
+private fun BottomDestination.isSelected(route: String): Boolean =
+    route == this.route || (route == "viewing" && this.route == "properties")
+
+private fun NavHostController.backOrProperties() {
+    if (!popBackStack()) {
+        go("properties")
     }
 }
