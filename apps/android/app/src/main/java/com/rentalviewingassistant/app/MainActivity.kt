@@ -45,6 +45,7 @@ import com.rentalviewingassistant.feature.profile.ProfileScreen
 import com.rentalviewingassistant.feature.property.PropertyDetailScreen
 import com.rentalviewingassistant.feature.property.PropertyEditorScreen
 import com.rentalviewingassistant.feature.property.PropertyScreen
+import com.rentalviewingassistant.feature.signing.SigningChecklistScreen
 import com.rentalviewingassistant.feature.signing.SigningScreen
 import com.rentalviewingassistant.feature.viewing.ChecklistItemDetailScreen
 import com.rentalviewingassistant.feature.viewing.ViewingScreen
@@ -406,7 +407,6 @@ private fun RentalNavHost(
                     it.signingSessionId == uiState.activeSigningSession?.id
                 },
                 aiResults = state.aiAnalysisResults,
-                onUpdateChecklist = viewModel::updateChecklistResult,
                 onAddMaterial = viewModel::addSigningMaterial,
                 onFinishSigning = viewModel::finishSigning,
                 onBuildAiShare = { propertyId, sessionId ->
@@ -416,6 +416,18 @@ private fun RentalNavHost(
                     viewModel.importAiResult(ChecklistStage.SIGNING, propertyId, sessionId, raw)
                 },
                 onOpenAiReview = { propertyId, sessionId -> navController.navigate("ai/signing/$propertyId/$sessionId") },
+                onOpenChecklist = { navController.navigate("signing/checklist") },
+            )
+        }
+        composable("signing/checklist") {
+            SigningChecklistScreen(
+                session = uiState.activeSigningSession,
+                property = uiState.activeSigningProperty,
+                checklist = uiState.signingChecklist,
+                selection = state.templateSelection,
+                results = state.checklistResults,
+                onBack = { navController.go("signing") },
+                onUpdateChecklist = viewModel::updateChecklistResult,
                 onOpenItemDetail = { propertyId, ownerId, categoryCode, itemCode ->
                     navController.navigate("checklist/signing/$propertyId/$ownerId/$categoryCode/$itemCode")
                 },

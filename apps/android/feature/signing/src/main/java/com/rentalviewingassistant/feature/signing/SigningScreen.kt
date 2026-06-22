@@ -7,13 +7,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,13 +27,11 @@ import com.rentalviewingassistant.domain.model.ChecklistStage
 import com.rentalviewingassistant.domain.model.ChecklistTemplateSelection
 import com.rentalviewingassistant.domain.model.Property
 import com.rentalviewingassistant.domain.model.ResultValue
-import com.rentalviewingassistant.domain.model.Severity
 import com.rentalviewingassistant.domain.model.SigningMaterialAsset
 import com.rentalviewingassistant.domain.model.SigningSession
 import com.rentalviewingassistant.domain.model.enabledCategories
 import com.rentalviewingassistant.feature.common.MetricTile
 import com.rentalviewingassistant.feature.common.PrototypeCard
-import com.rentalviewingassistant.feature.common.ResultChip
 import com.rentalviewingassistant.feature.common.ScreenHeader
 import com.rentalviewingassistant.feature.common.StatusChip
 
@@ -48,13 +44,12 @@ fun SigningScreen(
     results: List<ChecklistResult>,
     materials: List<SigningMaterialAsset>,
     aiResults: List<AiAnalysisResult>,
-    onUpdateChecklist: (ChecklistStage, String, String, String, String, ResultValue, Severity, String) -> Unit,
     onAddMaterial: (SigningSession, String, String) -> Unit,
     onFinishSigning: (SigningSession, Boolean, String) -> Unit,
     onBuildAiShare: (String, String) -> Unit,
     onImportAi: (String, String, String) -> Unit,
     onOpenAiReview: (String, String) -> Unit,
-    onOpenItemDetail: (propertyId: String, ownerId: String, categoryCode: String, itemCode: String) -> Unit,
+    onOpenChecklist: () -> Unit,
 ) {
     if (session == null || property == null) {
         Column(Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -71,8 +66,7 @@ fun SigningScreen(
     val riskCount = sessionResults.count { it.resultValue == ResultValue.RISK }
     val uncertainCount = sessionResults.count { it.resultValue == ResultValue.UNCERTAIN }
     val checkedCount = sessionResults.count { it.resultValue != ResultValue.UNCHECKED }
-    val moduleCodes = selection?.signingTemplateCodes.orEmpty()
-    val categories = checklist?.enabledCategories(moduleCodes).orEmpty()
+    val categories = checklist?.enabledCategories(selection?.signingTemplateCodes.orEmpty()).orEmpty()
     val totalCount = categories.sumOf { it.items.size }
     val latestAi = aiResults.filter { it.signingSessionId == session.id }.maxByOrNull { it.updatedAt }
 
@@ -96,6 +90,9 @@ fun SigningScreen(
                     MetricTile("不确定", uncertainCount.toString(), Modifier.weight(1f))
                 }
                 Text("优先处理身份授权、付款押金、维修边界和口头承诺是否写入合同。", style = MaterialTheme.typography.bodySmall)
+                Button(onClick = onOpenChecklist, modifier = Modifier.fillMaxWidth()) {
+                    Text("打开签约 Checklist")
+                }
                 if (latestAi != null) {
                     Text("AI：${latestAi.recommendation} · ${latestAi.summary}", color = MaterialTheme.colorScheme.primary)
                     OutlinedButton(onClick = { onOpenAiReview(property.id, session.id) }, modifier = Modifier.fillMaxWidth()) {
@@ -127,49 +124,6 @@ fun SigningScreen(
                 if (latestAi != null) {
                     OutlinedButton(onClick = { onOpenAiReview(property.id, session.id) }) {
                         Text("打开 AI 结果页")
-                    }
-                }
-            }
-        }
-        items(categories, key = { it.code }) { category ->
-            PrototypeCard {
-                val categoryResults = sessionResults.filter { it.categoryCode == category.code }
-                Text(
-                    "${category.label} (${categoryResults.count { it.resultValue != ResultValue.UNCHECKED }}/${category.items.size})",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                )
-                category.items.forEach { item ->
-                    val existing = sessionResults.firstOrNull { it.itemCode == item.code }
-                    var comment by remember(session.id, item.code, existing?.updatedAt) {
-                        mutableStateOf(existing?.comment.orEmpty())
-                    }
-                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                            Column(Modifier.weight(1f)) {
-                                Text(item.label, fontWeight = FontWeight.SemiBold)
-                                Text(item.oneLine, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            }
-                            ResultChip(existing?.resultValue ?: ResultValue.UNCHECKED)
-                        }
-                        TextButton(
-                            onClick = { onOpenItemDetail(property.id, session.id, category.code, item.code) },
-                            modifier = Modifier.fillMaxWidth(),
-                        ) {
-                            Text("查看检查方法和风险信号")
-                        }
-                        OutlinedTextField(comment, { comment = it }, label = { Text("备注") }, modifier = Modifier.fillMaxWidth())
-                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                            Button(onClick = {
-                                onUpdateChecklist(ChecklistStage.SIGNING, property.id, session.id, category.code, item.code, ResultValue.OK, Severity.NONE, comment)
-                            }) { Text("OK") }
-                            OutlinedButton(onClick = {
-                                onUpdateChecklist(ChecklistStage.SIGNING, property.id, session.id, category.code, item.code, ResultValue.UNCERTAIN, Severity.MEDIUM, comment)
-                            }) { Text("不确定") }
-                            OutlinedButton(onClick = {
-                                onUpdateChecklist(ChecklistStage.SIGNING, property.id, session.id, category.code, item.code, ResultValue.RISK, Severity.HIGH, comment)
-                            }) { Text("风险") }
-                        }
                     }
                 }
             }
